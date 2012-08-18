@@ -8,14 +8,14 @@ namespace TileEngine
     public class MapCell
     {
         /// <summary>
-        /// The height of the tile, in pixels, from 0
-        /// </summary>
-        public int BaseHeight { get; set; }
-
-        /// <summary>
         /// The list of tiles which exist "at ground level"
         /// </summary>
         public List<int> BaseTiles = new List<int>();
+
+        /// <summary>
+        /// A stand-in for a generated value
+        /// </summary>
+        public float Intensity { get; set; }
 
         /// <summary>
         /// A list of tiles which effectively pile on top of
@@ -75,10 +75,9 @@ namespace TileEngine
         /// Constructs a new MapCell with the supplied bottom-most tile.
         /// </summary>
         /// <param name="tileID"></param>
-        public MapCell(int tileID, int baseHeight)
+        public MapCell(int tileID)
         {
             TileID = tileID;
-            this.BaseHeight = baseHeight;
         }
     }
 }
