@@ -11,10 +11,17 @@ namespace TileEngine
     public class TileMapComponent : DrawableGameComponent
     {
         SpriteBatch spriteBatch;
+
+        public SpriteFont Font { get; set; }
+
         public TileMap MyMap { get; set; }
 
-        int baseOffsetX = 0;
-        int baseOffsetY = 0;
+        /// <summary>
+        /// Rigged up to make (0, 0) in pixel coordinates default
+        /// to the center of square (0, 0)
+        /// </summary>
+        int baseOffsetX;
+        int baseOffsetY;
 
         int squaresWideToDraw;
         int squaresTallToDraw;
@@ -31,8 +38,8 @@ namespace TileEngine
         {
             MyMap = new TileMap();
 
-            baseOffsetX = -Tile.TileWidth;
-            baseOffsetY = -Tile.TileHeight;
+            baseOffsetX = -Tile.TileStepX;
+            baseOffsetY = -Tile.TileHeight + Tile.TileStepY;
         }
 
         public override void Initialize()
@@ -57,8 +64,8 @@ namespace TileEngine
             Camera.ViewWidth = width;
             Camera.ViewHeight = height;
 
-            squaresWideToDraw = (int)((Math.Abs(baseOffsetX) + width) / Tile.TileStepX) + 3;
-            squaresTallToDraw = (int)((Math.Abs(baseOffsetY) + height) / Tile.TileStepY) + 2;
+            squaresWideToDraw = 1 + (int)((Math.Abs(baseOffsetX) + width) / (Tile.TileStepX * 2));
+            squaresTallToDraw = (int)((Math.Abs(baseOffsetY) + height) / (Tile.TileStepY * 2));
         }
 
         public void SetViewDimensions(GraphicsDeviceManager graphics)
@@ -70,8 +77,6 @@ namespace TileEngine
         {
             base.UnloadContent();
         }
-
-        private bool spaceDown = false;
 
         public override void Update(GameTime gameTime)
         {
@@ -89,123 +94,110 @@ namespace TileEngine
             if (ks.IsKeyDown(Keys.Down))
                 Camera.Move(0, 2);
 
-            if (ks.IsKeyDown(Keys.Space) && !spaceDown)
-            {
-                Console.WriteLine(Camera.Location.X + ", " + Camera.Location.Y);
-                spaceDown = true;
-
-                int firstX = Camera.Location.X / Tile.TileStepX;
-                int firstY = Camera.Location.Y / Tile.TileStepY;
-
-                int offsetX = Camera.Location.X - firstX * Tile.TileStepX;
-                int offsetY = Camera.Location.Y - firstY * Tile.TileStepY;
-
-                Console.WriteLine(firstX + ", " + firstY);
-                Console.WriteLine(offsetX + ", " + offsetY);
-
-                Console.WriteLine();
-            }
-            else
-            {
-                spaceDown = false;
-            }
-
             if (ks.IsKeyDown(Keys.A))
                 throw new Exception();
 
             base.Update(gameTime);
         }
 
+        /// <summary>
+        /// Transforms "world coordinates" to "pixel coordinates".
+        /// 
+        /// The "positive x" world vector (1, 0) is (Tile.TileStepX, Tile.TileStepY) in pixels
+        /// The "positive y" world vector (0, 1) is (Tile.TileStepX, -Tile.TileStepY) in pixels
+        /// 
+        /// So the transformation matrix is [ [TSX, TSY], [TSX, -TSY] ]
+        /// </summary>
+        /// <param name="worldCoordinates"></param>
+        /// <returns></returns>
+        public Vector2 WorldToPixel(Vector2 worldCoordinates)
+        {
+            return new Vector2(
+                Tile.TileStepX * (worldCoordinates.X + worldCoordinates.Y),
+                Tile.TileStepY * (worldCoordinates.X - worldCoordinates.Y)
+                );
+        }
+
+        /// <summary>
+        /// Transforms "pixel coordinates" into "world coordinates"
+        /// 
+        /// The transformation matrix above has the following inverse:
+        /// 
+        ///     [ [.5/TSX, .5/TSY], [.5/TSX, -.5/TSY] ]
+        ///     
+        /// Which will invert the transform and send pixel coordinates
+        /// into game-world coordinates.
+        /// </summary>
+        /// <param name="pixelCoords"></param>
+        /// <returns></returns>
+        public Vector2 PixelToWorld(Vector2 pixelCoords)
+        {
+            return new Vector2(
+                pixelCoords.X / (Tile.TileStepX * 2f) + pixelCoords.Y / (Tile.TileStepY * 2f),
+                pixelCoords.X / (Tile.TileStepX * 2f) - pixelCoords.Y / (Tile.TileStepY * 2f)
+                );
+        }
+
         public override void Draw(GameTime gameTime)
         {
-
             spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
 
             float maxdepth = ((squaresWideToDraw + 1) + ((squaresTallToDraw + 1) * Tile.TileWidth)) * 10;
             float depthOffset;
 
-            int firstX = Camera.Location.X / Tile.TileStepX - 1;
-            int firstY = Camera.Location.Y / Tile.TileStepY - 1;
+            //converts pixels to steps
+            int leftX = Numerical.intDivide(Camera.Location.X, Tile.TileStepX);
+            int topY = Numerical.intDivide(Camera.Location.Y, Tile.TileStepY);
 
-            int offsetX = Camera.Location.X - firstX * Tile.TileStepX;
-            int offsetY = Camera.Location.Y - firstY * Tile.TileStepY;
+            //if the sum is now odd, we will get weird errors, so just move over a little
+            //we will fix the inelegance with more offset
+            if (Numerical.Mod(leftX + topY, 2) == 1)
+                leftX--;
 
-            for (int y = 0; y < squaresTallToDraw; y++)
+            int firstX = (leftX + topY) / 2;
+            int firstY = (leftX - topY) / 2;
+
+            int offsetX = Camera.Location.X - (firstX + firstY) * Tile.TileStepX;
+            int offsetY = Camera.Location.Y - (firstX - firstY) * Tile.TileStepY;
+
+            int xDrawPosition, yDrawPosition;
+
+            MapCell cellToDraw;
+
+            for (int xPlusYHalf = 0; xPlusYHalf < squaresWideToDraw; xPlusYHalf++)
             {
-                //Move the odd rows over a bit
-                int rowOffset = 0;
-
-                //checks if it's odd
-                if (((firstY + y) & 1) == 1)
-                    rowOffset = Tile.OddRowXOffset;
-
-                for (int x = 0; x < squaresWideToDraw; x++)
+                for (int xMinusYHalf = 0; xMinusYHalf < squaresTallToDraw; xMinusYHalf++)
                 {
+                    int x = xPlusYHalf + xMinusYHalf;
+                    int y = xPlusYHalf - xMinusYHalf;
+
+                    /* Yes, yes the code is repeated ... just change both if necessary */
+
+                    xDrawPosition = (x + y) * Tile.TileStepX - offsetX + baseOffsetX;
+                    yDrawPosition = (x - y) * Tile.TileStepY - offsetY + baseOffsetY;
+
+                    //we really are moving around with those firstX and firstY values
+                    cellToDraw = MyMap.GetMapCell(firstX + x, firstY + y);
+
                     //the depth is just based on the loop itself
                     depthOffset = 0.7f - ((x + (y * Tile.TileWidth)) / maxdepth);
 
-                    //but we really are moving around with those firstX / firstY
-                    MapCell currentCell = MyMap.GetMapCell(firstX + x, firstY + y);
+                    cellToDraw.DrawCell(spriteBatch, xDrawPosition, yDrawPosition, depthOffset, heightRowDepthMod, Font);
 
-                    //Now draw the base tiles
-                    foreach (int tileID in currentCell.BaseTiles)
-                    {
-                        spriteBatch.Draw(
-                            Tile.TileSetTexture, //tiles texture
-                            new Rectangle( //drawing region, offset for x and y
-                                (x * Tile.TileStepX) - offsetX + rowOffset + baseOffsetX,
-                                (y * Tile.TileStepY) - offsetY + baseOffsetY,
-                                Tile.TileWidth,
-                                Tile.TileHeight),
-                            Tile.GetSourceRectangle(tileID), //source rectangle for this tile
-                            Color.White, //no tint
-                            0.0f, //no rotation
-                            Vector2.Zero, //origin vector; 0 means do nothing in particular
-                            SpriteEffects.None, //no sprite effects
-                            depthOffset
-                            );
-                    }
+                    x++;
 
-                    //then the height tiles
-                    int heightRow = 0;
+                    /* Yes, yes the code is repeated ... just change both if necessary */
 
-                    foreach (int tileID in currentCell.HeightTiles)
-                    {
-                        spriteBatch.Draw(
-                            Tile.TileSetTexture, //texture
-                            new Rectangle( //drawing region; like before, but move the Y up by Tile.HeightTileOffset each time we pile another HeightTile
-                                (x * Tile.TileStepX) - offsetX + rowOffset + baseOffsetX,
-                                (y * Tile.TileStepY) - offsetY + baseOffsetY - (heightRow * Tile.HeightTileOffset),
-                                Tile.TileWidth,
-                                Tile.TileHeight),
-                            Tile.GetSourceRectangle(tileID), //tile source rectangle
-                            Color.White, //no tint
-                            0.0f, //no rotation
-                            Vector2.Zero, //no use of the origin vector
-                            SpriteEffects.None, //no sprite effects
-                            depthOffset - ((float)heightRow * heightRowDepthMod) //the base depth, minus the offset from the height piling
-                            );
-                        heightRow++;
-                    }
+                    xDrawPosition = (x + y) * Tile.TileStepX - offsetX + baseOffsetX;
+                    yDrawPosition = (x - y) * Tile.TileStepY - offsetY + baseOffsetY;
 
-                    //And finally, the topper tiles
-                    foreach (int tileID in currentCell.TopperTiles)
-                    {
-                        spriteBatch.Draw(
-                            Tile.TileSetTexture,
-                            new Rectangle(
-                                (x * Tile.TileStepX) - offsetX + rowOffset + baseOffsetX,
-                                (y * Tile.TileStepY) - offsetY + baseOffsetY - (heightRow * Tile.HeightTileOffset),
-                                Tile.TileWidth,
-                                Tile.TileHeight),
-                            Tile.GetSourceRectangle(tileID),
-                            Color.White,
-                            0.0f,
-                            Vector2.Zero,
-                            SpriteEffects.None,
-                            depthOffset - ((float)heightRow * heightRowDepthMod)
-                            );
-                    }
+                    //we really are moving around with those firstX and firstY values
+                    cellToDraw = MyMap.GetMapCell(firstX + x, firstY + y);
+
+                    //the depth is just based on the loop itself
+                    depthOffset = 0.7f - ((x + (y * Tile.TileWidth)) / maxdepth);
+
+                    cellToDraw.DrawCell(spriteBatch, xDrawPosition, yDrawPosition, depthOffset, heightRowDepthMod, Font);
                 }
             }
 

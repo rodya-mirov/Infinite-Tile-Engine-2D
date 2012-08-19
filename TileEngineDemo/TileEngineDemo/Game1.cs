@@ -47,6 +47,9 @@ namespace TileEngineDemo
         protected override void LoadContent()
         {
             tileMapComponent.SetViewDimensions(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
+
+            SpriteFont font = Content.Load<SpriteFont>("Fonts/Segoe");
+            tileMapComponent.Font = font;
         }
 
         /// <summary>

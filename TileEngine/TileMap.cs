@@ -8,66 +8,40 @@ namespace TileEngine
     public class TileMap
     {
         public const int randomSeed = 121213;
+        private MapCache cellCache;
 
         public TileMap()
         {
+            cellCache = new MapCache(this);
         }
-
-        public MapCell GetMapCell(int x, int y)
-        {
-            Random random = new Random(randomSeed + (x^y));
-
-            MapCell output = new MapCell(random.Next(0, 6));
-            output.Intensity = makeIntensity(x, y);
-
-            return output;
-        }
-
-        private const int numOctaves = 2; //keep this relatively small
 
         /// <summary>
-        /// Constructs an intensity value using a grid-based value noise algorithm.
+        /// Gets the MapCell located at the (true) coordinates X and Y.
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        private float makeIntensity(int x, int y)
+        public MapCell GetMapCell(int x, int y)
         {
-            float output = 0;
+            cellCache.Guarantee(x, y);
+            return cellCache.Get(x, y);
+        }
 
-            int multiplier = (1 << numOctaves); //2 ** numOctaves
+        /// <summary>
+        /// Constructs the MapCell at the given coordinates;
+        /// does not consult the cache.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public MapCell MakeMapCell(int x, int y)
+        {
+            Random random = new Random(randomSeed + (x ^ y));
 
-            int leftX, rightX;
-            int topY, bottomY;
+            MapCell output = new MapCell(random.Next(0, 6));
 
-            float UL, UR, DL, DR;
-            float topAverage, bottomAverage, average;
-
-            float fMult;
-
-            while (multiplier > 0)
-            {
-                fMult = (float)multiplier;
-
-                leftX = x - Numerical.Mod(x, multiplier);
-                rightX = leftX + multiplier;
-
-                topY = y - Numerical.Mod(y, multiplier);
-                bottomY = topY + multiplier;
-
-                UL = Numerical.GetRandom(leftX, topY);
-                UR = Numerical.GetRandom(rightX, topY);
-                DL = Numerical.GetRandom(leftX, bottomY);
-                DR = Numerical.GetRandom(rightX, bottomY);
-
-                topAverage = UL * Numerical.QuinticScale((x - leftX) / multiplier) + UR * Numerical.QuinticScale((rightX - x) / multiplier);
-                bottomAverage = DL * Numerical.QuinticScale((x - leftX) / multiplier) + DR * Numerical.QuinticScale((rightX - x) / multiplier);
-                average = topAverage * Numerical.QuinticScale((y - topY) / multiplier) + bottomAverage * Numerical.QuinticScale((bottomY - y) / multiplier);
-
-                output += average * fMult;
-
-                multiplier = multiplier >> 1; //cut a digit off
-            }
+            output.X = x;
+            output.Y = y;
 
             return output;
         }

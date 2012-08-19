@@ -24,7 +24,7 @@ namespace TileEngine
         /// <summary>
         /// The amount to change the x-coordinate when drawing the next tile in a row
         /// </summary>
-        static public int TileStepX = 64;
+        static public int TileStepX = 32;
 
         /// <summary>
         /// The amount to change the y-coordinate when drawing the next row

@@ -93,6 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Camera.cs" />
+    <Compile Include="MapCache.cs" />
     <Compile Include="MapCell.cs" />
     <Compile Include="Numerical.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
