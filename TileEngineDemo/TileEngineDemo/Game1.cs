@@ -35,7 +35,8 @@ namespace TileEngineDemo
         /// </summary>
         protected override void Initialize()
         {
-            tileMapComponent = new TileMapComponent(this);
+            TileMap map = new TileMap();
+            tileMapComponent = new TileMapComponent(this, map);
             Components.Add(tileMapComponent);
 
             base.Initialize();
@@ -51,6 +52,76 @@ namespace TileEngineDemo
 
             SpriteFont font = Content.Load<SpriteFont>("Fonts/Segoe");
             tileMapComponent.Font = font;
+
+            BuildDefaultTiles();
+        }
+
+        private void BuildDefaultTiles()
+        {
+            MapCell[,] houseBlock = constructHouse();
+            tileMapComponent.MyMap.AddConstructedBlock(houseBlock, 5, 5);
+            tileMapComponent.MyMap.AddConstructedBlock(houseBlock, 5, 7);
+            tileMapComponent.MyMap.AddConstructedBlock(houseBlock, 5, 10);
+            tileMapComponent.MyMap.AddConstructedBlock(houseBlock, 5, 12);
+        }
+
+        /// <summary>
+        /// A pre-made method which shows how to construct a house
+        /// </summary>
+        /// <returns></returns>
+        private MapCell[,] constructHouse()
+        {
+            MapCell[,] houseBlock = new MapCell[4, 2];
+
+            MapCell cell;
+
+            //0, 0, left corner
+            cell = new MapCell(70, 0, 0);
+            cell.AddHeightTile(91);
+            cell.AddHeightTile(31);
+            houseBlock[0, 0] = cell;
+
+            //0, 2, top corner
+            cell = new MapCell(70, 0, 1);
+            cell.AddHeightTile(51);
+            houseBlock[0, 1] = cell;
+
+            //1, 0, bottom wall
+            cell = new MapCell(70, 1, 0);
+            cell.AddHeightTile(91);
+            cell.AddHeightTile(31);
+            houseBlock[1, 0] = cell;
+
+            //1, 1, top wall
+            cell = new MapCell(70, 1, 1);
+            cell.AddHeightTile(60);
+            houseBlock[1, 1] = cell;
+
+            //2, 0, bottom wall
+            cell = new MapCell(70, 2, 0);
+            cell.AddHeightTile(91);
+            cell.AddHeightTile(31);
+            houseBlock[2, 0] = cell;
+
+            //2, 1, top wall
+            cell = new MapCell(70, 2, 1);
+            cell.AddHeightTile(60);
+            houseBlock[2, 1] = cell;
+
+            //3, 0, right corner
+            cell = new MapCell(70, 3, 0);
+            cell.AddHeightTile(91);
+            cell.AddHeightTile(31);
+            houseBlock[3, 0] = cell;
+
+            //3, 1, bottom corner
+            cell = new MapCell(70, 3, 1);
+            cell.AddHeightTile(94);
+            cell.AddHeightTile(37);
+            houseBlock[3, 1] = cell;
+
+            //send it out!
+            return houseBlock;
         }
 
         /// <summary>

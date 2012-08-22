@@ -12,8 +12,7 @@ Since that's too easy to be worth establishing
 a new project for (in fact there is an
 excellent tutorial, complete with usable sample
 code, at [XNA Resources][xnaresources]), I'm going to take
-the engine a step up, and make it infinite
-and procedurally generated.
+the engine a step up, and make it infinite.
 
 [xnaresources]: http://www.xnaresources.com/default.asp?page=Tutorial:TileEngineSeries:4
 	
@@ -35,17 +34,55 @@ and the methods for doing that should be made
 fairly clear by the demo project, packaged with
 the engine itself.
 
+If you want to use procedural generation (which
+this is designed for), just extend the TileMap
+class, and in particular, override the MakeMapCell(x,y)
+method to make MapCells of your own design.
+
 Status?
 -------
 
 Currently the world allows for unlimited scrolling
 with persistence and no repeating (until you
-overflow your integers, so it's actually a huge
-torus).
+overflow your integers, so it's technically a huge
+torus, but that's farther than players should
+reasonably go!).
 
-The tiles are all at the same elevation
-and so forth, but visually, they choose from one
-of several pre-drawn isometric tiles, drawn from
-[OpenGameArt][oga].
+There is support for caching, and both procedural
+generation and manual creation can happily coexist.
+A small demo is attached which gives an example
+of manually created content.
 
-[oga]: http://opengameart.org/content/isometric-64x64-outside-tileset
+The tiles used in the demo (except the solid color
+tiles) were made by Seth Galbraith, and are available
+at [OpenGameArt][oga2].  They are intended to be used
+in conjunction with [Yar's work][oga1], which was used
+in previous versions of this project, but is not in
+the current build.
+
+[oga1]: http://opengameart.org/content/isometric-64x64-outside-tileset
+[oga2]: http://opengameart.org/content/isometric-64x64-medieval-building-tileset
+
+Copyright?
+----------
+
+Excepting art assets, this work was done by Richard
+Rast, drawing on tutorials to get started and vague
+ideas (such as infinite worlds) which I implemented
+myself but did not invent.
+
+The code is released under the [CC-BY-NC-3.0][ccbync3]
+license, which means you can do whatever you want with it,
+so long as you don't sell it.  I don't particularly mind
+if you mess up the attribution, either.  If you _do_ want to
+sell a derivative work, you'll need to talk to me first.
+
+[ccbync3]:http://creativecommons.org/licenses/by-nc/3.0/
+
+The art assets are licensed separately and are property
+of their original creator, as noted above.  They
+are both released under the [CC-BY-3.0][ccby3] license,
+which means you're free to do whatever with them, so
+long as attribution is maintained.
+
+[ccby3]:http://creativecommons.org/licenses/by/3.0/

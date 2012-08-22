@@ -14,7 +14,7 @@ namespace TileEngine
 
         public SpriteFont Font { get; set; }
 
-        public TileMap MyMap { get; set; }
+        public TileMap MyMap { get; private set; }
 
         #region Drawing Information
         /// <summary>
@@ -35,10 +35,10 @@ namespace TileEngine
         float heightRowDepthMod = 0.0000001f;
         #endregion
 
-        public TileMapComponent(Game game)
+        public TileMapComponent(Game game, TileMap map)
             : base(game)
         {
-            MyMap = new TileMap();
+            MyMap = map;
 
             baseOffsetX = -Tile.TileStepX;
             baseOffsetY = -Tile.TileHeight + Tile.TileStepY;

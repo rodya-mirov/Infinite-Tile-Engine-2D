@@ -66,6 +66,28 @@ namespace TileEngine
         }
 
         /// <summary>
+        /// Saves an externally constructed cell.
+        /// </summary>
+        /// <param name="cell"></param>
+        public void SaveExternalCell(MapCell cell)
+        {
+            savedCells.Add(new SortedPoint(cell), cell);
+        }
+
+        /// <summary>
+        /// Saves a shifted copy of an externally constructed cell.
+        /// </summary>
+        /// <param name="cell"></param>
+        /// <param name="newX"></param>
+        /// <param name="newY"></param>
+        public void SaveExternalCell(MapCell cell, int newX, int newY)
+        {
+            MapCell newCell = new MapCell(cell, newX, newY);
+
+            savedCells.Add(new SortedPoint(newCell), newCell);
+        }
+
+        /// <summary>
         /// Writes down a constructed block of MapCells to be permanently saved.
         /// </summary>
         /// <param name="block"></param>
