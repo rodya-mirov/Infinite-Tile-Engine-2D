@@ -16,6 +16,8 @@ namespace TileEngine
 
         public TileMap MyMap { get; private set; }
 
+        public String ContentLocation { get; private set; }
+
         #region Drawing Information
         /// <summary>
         /// Rigged up to make (0, 0) in pixel coordinates default
@@ -35,10 +37,11 @@ namespace TileEngine
         float heightRowDepthMod = 0.0000001f;
         #endregion
 
-        public TileMapComponent(Game game, TileMap map)
+        public TileMapComponent(Game game, TileMap map, String contentLocation)
             : base(game)
         {
             MyMap = map;
+            this.ContentLocation = contentLocation;
 
             baseOffsetX = -Tile.TileStepX;
             baseOffsetY = -Tile.TileHeight + Tile.TileStepY;
@@ -54,7 +57,7 @@ namespace TileEngine
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            Tile.TileSetTexture = Game.Content.Load<Texture2D>(@"Textures\TileSets\TileSheet");
+            Tile.TileSetTexture = Game.Content.Load<Texture2D>(ContentLocation);
 
             Camera.DisplayOffset = new Point(baseOffsetX, baseOffsetY);
 

@@ -36,7 +36,7 @@ namespace TileEngineDemo
         protected override void Initialize()
         {
             TileMap map = new TileMap();
-            tileMapComponent = new TileMapComponent(this, map);
+            tileMapComponent = new TileMapComponent(this, map, @"Textures\TileSets\TileSheet");
             Components.Add(tileMapComponent);
 
             base.Initialize();
