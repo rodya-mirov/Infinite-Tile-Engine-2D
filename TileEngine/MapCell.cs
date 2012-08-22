@@ -9,8 +9,8 @@ namespace TileEngine
 {
     public class MapCell
     {
-        public int X { get; set; }
-        public int Y { get; set; }
+        public int X { get; private set; }
+        public int Y { get; private set; }
 
         /// <summary>
         /// The list of tiles which exist "at ground level"
@@ -28,21 +28,6 @@ namespace TileEngine
         /// pile of height tiles.
         /// </summary>
         public List<int> TopperTiles = new List<int>();
-
-        /// <summary>
-        /// Returns or sets the bottom-most tile in the base
-        /// </summary>
-        public int TileID
-        {
-            get { return BaseTiles.Count > 0 ? BaseTiles[0] : 0; }
-            set
-            {
-                if (BaseTiles.Count > 0)
-                    BaseTiles[0] = value;
-                else
-                    AddBaseTile(value);
-            }
-        }
 
         /// <summary>
         /// Adds a new BaseTile on top of the existing base tiles.
@@ -74,10 +59,30 @@ namespace TileEngine
         /// <summary>
         /// Constructs a new MapCell with the supplied bottom-most tile.
         /// </summary>
-        /// <param name="tileID"></param>
-        public MapCell(int tileID)
+        /// <param name="bottomTileID"></param>
+        public MapCell(int bottomTileID, int x, int y)
         {
-            TileID = tileID;
+            AddBaseTile(bottomTileID);
+
+            this.X = x;
+            this.Y = y;
+        }
+
+        /// <summary>
+        /// Constructs a copy of the given cell, located
+        /// at the new coordinates.
+        /// </summary>
+        /// <param name="toCopy"></param>
+        /// <param name="newX"></param>
+        /// <param name="newY"></param>
+        public MapCell(MapCell toCopy, int newX, int newY)
+        {
+            BaseTiles = new List<int>(toCopy.BaseTiles);
+            HeightTiles = new List<int>(toCopy.HeightTiles);
+            TopperTiles = new List<int>(toCopy.TopperTiles);
+
+            this.X = newX;
+            this.Y = newY;
         }
 
         /// <summary>
@@ -91,8 +96,11 @@ namespace TileEngine
         /// <param name="startingDepth">The depth value of the bottom-most part of the cell.</param>
         /// <param name="heightRowDepthMod">The amount to decrease the depth with each stacked tile.</param>
         /// <param name="font">The font to draw the coordinates in</param>
-        public void DrawCell(SpriteBatch spriteBatch, int xDrawPosition, int yDrawPosition, float startingDepth, float heightRowDepthMod, SpriteFont font = null)
+        public void DrawCell(SpriteBatch spriteBatch, int xDrawPosition, int yDrawPosition,
+            float startingDepth, float heightRowDepthMod)
         {
+            float depthMod = 0;
+
             //Now draw the base tiles
             foreach (int tileID in this.BaseTiles)
             {
@@ -108,8 +116,10 @@ namespace TileEngine
                     0.0f, //no rotation
                     Vector2.Zero, //origin vector; 0 means do nothing in particular
                     SpriteEffects.None, //no sprite effects
-                    startingDepth
+                    startingDepth - depthMod
                     );
+
+                depthMod += heightRowDepthMod;
             }
 
             //represents how deep in the HeightTiles stack we are
@@ -130,9 +140,11 @@ namespace TileEngine
                     0.0f, //no rotation
                     Vector2.Zero, //no use of the origin vector
                     SpriteEffects.None, //no sprite effects
-                    startingDepth - ((float)heightRow * heightRowDepthMod) //the base depth, minus the offset from the height piling
+                    startingDepth - depthMod - ((float)heightRow * heightRowDepthMod) //the base depth, minus the offset from the height piling
                     );
+
                 heightRow++;
+                depthMod += heightRowDepthMod;
             }
 
             //note heightRow is retained after that loop, so is now "the row above all the HeightTiles"
@@ -152,9 +164,31 @@ namespace TileEngine
                     0.0f,
                     Vector2.Zero,
                     SpriteEffects.None,
+                    startingDepth - depthMod - ((float)heightRow * heightRowDepthMod)
+                    );
+
+                depthMod += heightRowDepthMod;
+            }
+
+            /*
+            //as a topper, draw the highlighted if necessary
+            if (isHighlighted)
+            {
+                spriteBatch.Draw(
+                    Tile.TileSetTexture,
+                    new Rectangle(
+                        xDrawPosition,
+                        yDrawPosition - (heightRow * Tile.HeightTileOffset),
+                        Tile.TileWidth,
+                        Tile.TileHeight),
+                    Tile.GetSourceRectangle((int)TileType.HIGHLIGHTED),
+                    Color.White,
+                    0.0f,
+                    Vector2.Zero,
+                    SpriteEffects.None,
                     startingDepth - ((float)heightRow * heightRowDepthMod)
                     );
-            }
+            } */
         }
     }
 }

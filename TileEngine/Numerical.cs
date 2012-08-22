@@ -7,6 +7,8 @@ namespace TileEngine
 {
     public static class Numerical
     {
+        public const uint cutOff = (1 << 16) - 1; //use & to get just the first 16 digits of your number
+
         /// <summary>
         /// Returns the "correct" x%y (that is, the
         /// positive remainder of x/y).  Assumes
@@ -93,6 +95,30 @@ namespace TileEngine
         {
             Random r = new Random(xSeed ^ ySeed);
             return (float)r.NextDouble();
+        }
+
+        /// <summary>
+        /// Constructs a seed (for pseudo-random number generation purposes)
+        /// using an (x,y) coordinate and third random seed.  The idea is
+        /// to make the seeds different for a fixed random seed as x and y
+        /// vary locally.
+        /// 
+        /// The chosen method is to take the least-significant (aka "local")
+        /// half of both x and y, and concatenate them as uints.  Then add
+        /// randomSeed (also as a uint), cast it back to an int, and return it.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="randomSeed"></param>
+        /// <returns></returns>
+        public static int MakeSeed(int x, int y, int randomSeed)
+        {
+            //parens!  But no, this is really (least sig half of x) concatenated with (least sig half of y)
+            //then translated by randomseed
+            unchecked
+            {
+                return (int)(((uint)randomSeed) + ((((uint)x) & cutOff) << 16) + (((uint)y) & cutOff));
+            }
         }
     }
 }

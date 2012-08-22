@@ -91,7 +91,7 @@ namespace TileEngine
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        public void Guarantee(int x, int y)
+        public void SmoothGuarantee(int x, int y)
         {
             while (y < yMin)
                 addTopRow();

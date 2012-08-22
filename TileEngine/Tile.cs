@@ -55,5 +55,28 @@ namespace TileEngine
             return new Rectangle(tileX * TileWidth, tileY * TileHeight, TileWidth, TileHeight);
         }
 
+
+        /// <summary>
+        /// Returns the rectangle needed to draw the tile at a specific index
+        /// </summary>
+        /// <param name="type">The special name of a type of tile</param>
+        /// <returns>The source Rectangle required to draw it</returns>
+        static public Rectangle GetSourceRectangle(TileType type)
+        {
+            return GetSourceRectangle((int)type);
+        }
     }
+
+    //Each row has 10 things in it, things are numbered in reading order from 0
+    //so the first in each row are numbered 0, 10, 20, etc.
+    public enum TileType
+    {
+        //these I drew :P
+        GRASS = 0,
+        WATER = 1,
+
+        HIGHLIGHTED = 10
+
+        //the building tiles are hard to label individually so I won't
+    };
 }
