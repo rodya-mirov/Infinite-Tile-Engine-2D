@@ -2,23 +2,29 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
 
 namespace TileEngine
 {
     /// <summary>
     /// This is a bit like the cache, but only saves when it's explicitly told to.
     /// Adds whole blocks at a time!
+    /// 
+    /// The underlying structure is a sorted list of cells with their coordinates,
+    /// though.  This is actually faster than the blocks, in general, because there's
+    /// no good way to sort the blocks, and no obvious way to defragment block
+    /// storage.
     /// </summary>
     public class MapSaved
     {
-        private List<SavedBlock> savedBlocks;
+        private SortedList<SortedPoint, MapCell> savedCells;
         private TileMap map;
 
         public MapSaved(TileMap map)
         {
             this.map = map;
 
-            savedBlocks = new List<SavedBlock>();
+            savedCells = new SortedList<SortedPoint, MapCell>();
         }
 
         /// <summary>
@@ -30,11 +36,10 @@ namespace TileEngine
         /// <returns></returns>
         public MapCell GetCell(int x, int y)
         {
-            foreach (SavedBlock block in savedBlocks)
-            {
-                if (block.containsCell(x, y))
-                    return block.getCell(x, y);
-            }
+            SortedPoint p = new SortedPoint(x, y);
+
+            if (savedCells.ContainsKey(p))
+                return savedCells[p];
 
             return null;
         }
@@ -48,16 +53,16 @@ namespace TileEngine
         /// <param name="height"></param>
         public void SaveExistingBlock(int xmin, int ymin, int width, int height)
         {
-            MapCell[,] cells = new MapCell[width, height];
+            MapCell cell;
+
             for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
                 {
-                    cells[xmin + x, ymin + y] = map.GetMapCell(xmin + x, ymin + y);
+                    cell = map.GetMapCell(xmin + x, ymin + y);
+                    savedCells.Add(new SortedPoint(cell), cell);
                 }
             }
-
-            savedBlocks.Add(new SavedBlock(cells));
         }
 
         /// <summary>
@@ -66,7 +71,8 @@ namespace TileEngine
         /// <param name="block"></param>
         public void SaveExternalBlock(MapCell[,] block)
         {
-            savedBlocks.Add(new SavedBlock(block));
+            foreach (MapCell cell in block)
+                savedCells.Add(new SortedPoint(cell), cell);
         }
 
         /// <summary>
@@ -81,44 +87,16 @@ namespace TileEngine
             int width = block.GetLength(0);
             int height = block.GetLength(1);
 
-            MapCell[,] newBlock = new MapCell[width, height];
+            MapCell cell;
 
             for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
                 {
-                    newBlock[x, y] = new MapCell(block[x, y], xmin + x, ymin + y);
+                    cell = new MapCell(block[x, y], xmin + x, ymin + y);
+                    savedCells.Add(new SortedPoint(cell), cell);
                 }
             }
-
-            savedBlocks.Add(new SavedBlock(newBlock));
-
-        }
-    }
-
-    public struct SavedBlock
-    {
-        MapCell[,] blocks;
-        int xmin, ymin, width, height;
-
-        public SavedBlock(MapCell[,] blocks)
-        {
-            this.blocks = blocks;
-            this.xmin = blocks[0,0].X;
-            this.ymin = blocks[0,0].Y;
-
-            this.width = blocks.GetLength(0);
-            this.height = blocks.GetLength(1);
-        }
-
-        public bool containsCell(int x, int y)
-        {
-            return xmin <= x && x < xmin + width && ymin <= y && y < ymin + height;
-        }
-
-        public MapCell getCell(int x, int y)
-        {
-            return blocks[x - xmin, y - ymin];
         }
     }
 }

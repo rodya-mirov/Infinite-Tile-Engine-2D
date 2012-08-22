@@ -190,5 +190,44 @@ namespace TileEngine
                     );
             } */
         }
+
+        /// <summary>
+        /// Sorts by X-coordinate, then sub-sorts by Y-coordinate.
+        /// Returns 0 iff the coordinates are the same.
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public int CompareTo(MapCell other)
+        {
+            if (this.X != other.X)
+                return this.X - other.X;
+
+            return this.Y - other.Y;
+        }
+    }
+
+    public struct SortedPoint : IComparable<SortedPoint>
+    {
+        public int X, Y;
+
+        public SortedPoint(int x, int y)
+        {
+            this.X = x;
+            this.Y = y;
+        }
+
+        public SortedPoint(MapCell cell)
+        {
+            this.X = cell.X;
+            this.Y = cell.Y;
+        }
+
+        public int CompareTo(SortedPoint other)
+        {
+            if (this.X != other.X)
+                return this.X - other.X;
+            else
+                return this.Y - other.Y;
+        }
     }
 }
