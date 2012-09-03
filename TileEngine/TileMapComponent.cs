@@ -85,20 +85,31 @@ namespace TileEngine
 
         public override void Update(GameTime gameTime)
         {
-            KeyboardState ks = Keyboard.GetState();
             MouseState ms = Mouse.GetState();
 
-            processMovement(ks);
             processMouseMovement(ms);
-
-            if (ks.IsKeyDown(Keys.Back))
-                throw new Exception();
 
             base.Update(gameTime);
         }
 
-        private int selectedSquareX { get; set; }
-        private int selectedSquareY { get; set; }
+        /// <summary>
+        /// MouseSquare is the most recently moused-over (in-game) square coordinate.
+        /// This is updated automatically during the Update loop.
+        /// </summary>
+        public int MouseSquareX { get; set; }
+        /// <summary>
+        /// MouseSquare is the most recently moused-over (in-game) square coordinate.
+        /// This is updated automatically during the Update loop.
+        /// </summary>
+        public int MouseSquareY { get; set; }
+        /// <summary>
+        /// MouseSquare is the most recently moused-over (in-game) square coordinate.
+        /// This is updated automatically during the Update loop.
+        /// </summary>
+        public Point MouseSquare
+        {
+            get { return new Point(MouseSquareX, MouseSquareY); }
+        }
 
         private int mouseScreenX { get; set; }
         private int mouseScreenY { get; set; }
@@ -167,23 +178,8 @@ namespace TileEngine
             int relativeSquareX = Numerical.intDivide(gridPosX + gridPosY, 2) + 1;
             int relativeSquareY = Numerical.intDivide(gridPosX - gridPosY, 2);
 
-            this.selectedSquareX = relativeSquareX;
-            this.selectedSquareY = relativeSquareY;
-        }
-
-        private void processMovement(KeyboardState ks)
-        {
-            if (ks.IsKeyDown(Keys.Left) || ks.IsKeyDown(Keys.A))
-                Camera.Move(-2, 0);
-
-            if (ks.IsKeyDown(Keys.Right) || ks.IsKeyDown(Keys.D))
-                Camera.Move(2, 0);
-
-            if (ks.IsKeyDown(Keys.Up) || ks.IsKeyDown(Keys.W))
-                Camera.Move(0, -2);
-
-            if (ks.IsKeyDown(Keys.Down) || ks.IsKeyDown(Keys.S))
-                Camera.Move(0, 2);
+            this.MouseSquareX = relativeSquareX;
+            this.MouseSquareY = relativeSquareY;
         }
 
         public override void Draw(GameTime gameTime)

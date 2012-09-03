@@ -50,6 +50,11 @@ reasonably go!).
 
 There is support for caching, and both procedural
 generation and manual creation can happily coexist.
+
+There is support for mouse action (that is, the engine
+automatically tracks the most recently moused-over
+square) so the user won't have to.
+
 A small demo is attached which gives an example
 of manually created content.
 

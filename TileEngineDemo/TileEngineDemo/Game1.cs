@@ -145,7 +145,24 @@ namespace TileEngineDemo
             if (ks.IsKeyDown(Keys.Escape))
                 this.Exit();
 
+            processMovement(ks);
+
             base.Update(gameTime);
+        }
+
+        private void processMovement(KeyboardState ks)
+        {
+            if (ks.IsKeyDown(Keys.Left) || ks.IsKeyDown(Keys.A))
+                Camera.Move(-2, 0);
+
+            if (ks.IsKeyDown(Keys.Right) || ks.IsKeyDown(Keys.D))
+                Camera.Move(2, 0);
+
+            if (ks.IsKeyDown(Keys.Up) || ks.IsKeyDown(Keys.W))
+                Camera.Move(0, -2);
+
+            if (ks.IsKeyDown(Keys.Down) || ks.IsKeyDown(Keys.S))
+                Camera.Move(0, 2);
         }
 
         /// <summary>
