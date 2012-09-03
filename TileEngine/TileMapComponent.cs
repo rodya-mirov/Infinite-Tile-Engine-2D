@@ -89,6 +89,7 @@ namespace TileEngine
             MouseState ms = Mouse.GetState();
 
             processMovement(ks);
+            processMouseMovement(ms);
 
             if (ks.IsKeyDown(Keys.Back))
                 throw new Exception();
@@ -96,18 +97,92 @@ namespace TileEngine
             base.Update(gameTime);
         }
 
+        private int selectedSquareX { get; set; }
+        private int selectedSquareY { get; set; }
+
+        private int mouseScreenX { get; set; }
+        private int mouseScreenY { get; set; }
+
+        private void processMouseMovement(MouseState ms)
+        {
+            updateMousePosition(ms.X, ms.Y);
+        }
+
+        private void updateMousePosition(int mouseX, int mouseY)
+        {
+            if (this.mouseScreenX == mouseX && this.mouseScreenY == mouseY)
+                return;
+
+            this.mouseScreenX = mouseX;
+            this.mouseScreenY = mouseY;
+
+            int properOffsetX = -Camera.Location.X;
+            int properOffsetY = -Camera.Location.Y;
+
+            int gameRawMouseX = mouseX - properOffsetX;
+            int gameRawMouseY = mouseY - properOffsetY;
+
+            int gridPosX = Numerical.intDivide(gameRawMouseX, Tile.TileStepX);
+            int gridPosY = Numerical.intDivide(gameRawMouseY, Tile.TileStepY);
+
+            //now two cases: define the grid parity to be gridPosX+gridPosY % 2
+            //if it's even, our square is divided like this: /
+            //    then either we're a lower-right corner or an upper-left corner
+            //if it's odd, our square is divided like this: \
+            //    then either we're an upper-right corner or a lower-left corner
+            //we'll transform everything into an upper-left corner
+
+            int gridParity = Numerical.Mod(gridPosX + gridPosY, 2);
+
+            int inSquareX = gameRawMouseX - Tile.TileStepX * gridPosX;
+            int inSquareY = gameRawMouseY - Tile.TileStepY * gridPosY;
+
+            if (gridParity == 0)
+            {
+                //UL corner (below the / diagonal)
+                if ((inSquareY - Tile.TileStepY) * Tile.TileStepX >= -inSquareX * Tile.TileStepY)
+                {
+                    //do nothing
+                }
+                else //DR corner
+                {
+                    gridPosX -= 1;
+                    gridPosY -= 1;
+                }
+            }
+            else
+            {
+                //UR corner (below the \ diagonal)
+                if (inSquareY * Tile.TileStepX >= Tile.TileStepY * inSquareX)
+                {
+                    gridPosX -= 1;
+                }
+                else //DL corner
+                {
+                    gridPosY -= 1;
+                }
+            }
+
+            //the parity is 0, guaranteed by the above, so there's no issue of rounding errors
+            int relativeSquareX = Numerical.intDivide(gridPosX + gridPosY, 2) + 1;
+            int relativeSquareY = Numerical.intDivide(gridPosX - gridPosY, 2);
+
+            this.selectedSquareX = relativeSquareX;
+            this.selectedSquareY = relativeSquareY;
+        }
+
         private void processMovement(KeyboardState ks)
         {
-            if (ks.IsKeyDown(Keys.Left))
+            if (ks.IsKeyDown(Keys.Left) || ks.IsKeyDown(Keys.A))
                 Camera.Move(-2, 0);
 
-            if (ks.IsKeyDown(Keys.Right))
+            if (ks.IsKeyDown(Keys.Right) || ks.IsKeyDown(Keys.D))
                 Camera.Move(2, 0);
 
-            if (ks.IsKeyDown(Keys.Up))
+            if (ks.IsKeyDown(Keys.Up) || ks.IsKeyDown(Keys.W))
                 Camera.Move(0, -2);
 
-            if (ks.IsKeyDown(Keys.Down))
+            if (ks.IsKeyDown(Keys.Down) || ks.IsKeyDown(Keys.S))
                 Camera.Move(0, 2);
         }
 

@@ -47,13 +47,13 @@ namespace TileEngine
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public static int intDivide(float x, float y)
+        public static int intDivide(int x, int y)
         {
             int r = (int)(x / y);
 
             return (r * y > x) ? r - 1 : r;
         }
-        
+
         /// <summary>
         /// Returns the "correct" rounding DOWN
         /// of x/y, assuming y>0.  That is, the largest
@@ -62,7 +62,7 @@ namespace TileEngine
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public static int intDivide(int x, int y)
+        public static int intDivide(float x, float y)
         {
             int r = (int)(x / y);
 
