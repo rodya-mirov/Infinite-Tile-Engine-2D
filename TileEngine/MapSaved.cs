@@ -60,7 +60,8 @@ namespace TileEngine
                 for (int y = 0; y < height; y++)
                 {
                     cell = map.GetMapCell(xmin + x, ymin + y);
-                    savedCells.Add(new SortedPoint(cell), cell);
+                    SortedPoint sp = new SortedPoint(cell);
+                    savedCells[sp] = cell;
                 }
             }
         }
@@ -71,7 +72,8 @@ namespace TileEngine
         /// <param name="cell"></param>
         public void SaveExternalCell(MapCell cell)
         {
-            savedCells.Add(new SortedPoint(cell), cell);
+            SortedPoint sp = new SortedPoint(cell);
+            savedCells[sp] = cell;
         }
 
         /// <summary>
@@ -84,7 +86,8 @@ namespace TileEngine
         {
             MapCell newCell = new MapCell(cell, newX, newY);
 
-            savedCells.Add(new SortedPoint(newCell), newCell);
+            SortedPoint sp = new SortedPoint(newCell);
+            savedCells[sp] = newCell;
         }
 
         /// <summary>
@@ -94,7 +97,10 @@ namespace TileEngine
         public void SaveExternalBlock(MapCell[,] block)
         {
             foreach (MapCell cell in block)
-                savedCells.Add(new SortedPoint(cell), cell);
+            {
+                SortedPoint sp = new SortedPoint(cell);
+                savedCells[sp] = cell;
+            }
         }
 
         /// <summary>
@@ -116,9 +122,33 @@ namespace TileEngine
                 for (int y = 0; y < height; y++)
                 {
                     cell = new MapCell(block[x, y], xmin + x, ymin + y);
-                    savedCells.Add(new SortedPoint(cell), cell);
+
+                    SortedPoint sp = new SortedPoint(cell);
+                    savedCells[sp] = cell;
                 }
             }
+        }
+
+        /// <summary>
+        /// Completely wipes out all saved cells, irrevocably!
+        /// USE WITH CAUTION
+        /// </summary>
+        public void Clear()
+        {
+            savedCells.Clear();
+        }
+
+        /// <summary>
+        /// Clears any saved cell at the specified position.  Does nothing
+        /// if there was nothing there.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        public void ClearCellAtPosition(int x, int y)
+        {
+            SortedPoint sp = new SortedPoint(x, y);
+            if (savedCells.ContainsKey(sp))
+                savedCells.Keys.Remove(sp);
         }
     }
 }
