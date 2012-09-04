@@ -37,10 +37,9 @@ namespace TileEngine
         float heightRowDepthMod = 0.0000001f;
         #endregion
 
-        public TileMapComponent(Game game, TileMap map, String contentLocation)
+        public TileMapComponent(Game game, String contentLocation)
             : base(game)
         {
-            MyMap = map;
             this.ContentLocation = contentLocation;
 
             baseOffsetX = -Tile.TileStepX;
@@ -50,6 +49,13 @@ namespace TileEngine
         public override void Initialize()
         {
             base.Initialize();
+
+            MyMap = makeMap();
+        }
+
+        protected virtual TileMap makeMap()
+        {
+            return new TileMap();
         }
 
         protected override void LoadContent()
@@ -121,8 +127,11 @@ namespace TileEngine
 
         private void updateMousePosition(int mouseX, int mouseY)
         {
+            //Premature optimization is the mother of weird errors
+            /*
             if (this.mouseScreenX == mouseX && this.mouseScreenY == mouseY)
                 return;
+             */
 
             this.mouseScreenX = mouseX;
             this.mouseScreenY = mouseY;
