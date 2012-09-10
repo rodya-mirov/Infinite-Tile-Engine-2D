@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace TileEngine
 {
-    public class TileMapComponent : DrawableGameComponent
+    public class TileMapVisualizer
     {
         SpriteBatch spriteBatch;
 
@@ -17,6 +17,8 @@ namespace TileEngine
         public TileMap MyMap { get; private set; }
 
         public String ContentLocation { get; private set; }
+
+        protected Game game { get; set; }
 
         #region Drawing Information
         /// <summary>
@@ -37,19 +39,17 @@ namespace TileEngine
         float heightRowDepthMod = 0.0000001f;
         #endregion
 
-        public TileMapComponent(Game game, String contentLocation)
-            : base(game)
+        public TileMapVisualizer(Game game, String contentLocation)
         {
             this.ContentLocation = contentLocation;
+            this.game = game;
 
             baseOffsetX = -Tile.TileStepX;
             baseOffsetY = -Tile.TileHeight + Tile.TileStepY;
         }
 
-        public override void Initialize()
+        public void Initialize()
         {
-            base.Initialize();
-
             MyMap = makeMap();
         }
 
@@ -58,16 +58,14 @@ namespace TileEngine
             return new TileMap();
         }
 
-        protected override void LoadContent()
+        public void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            spriteBatch = new SpriteBatch(game.GraphicsDevice);
 
-            Tile.TileSetTexture = Game.Content.Load<Texture2D>(ContentLocation);
+            Tile.TileSetTexture = game.Content.Load<Texture2D>(ContentLocation);
 
             Camera.DisplayOffset = new Point(baseOffsetX, baseOffsetY);
-
-            base.LoadContent();
         }
 
         public void SetViewDimensions(int width, int height)
@@ -84,18 +82,11 @@ namespace TileEngine
             this.SetViewDimensions(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
         }
 
-        protected override void UnloadContent()
-        {
-            base.UnloadContent();
-        }
-
-        public override void Update(GameTime gameTime)
+        public void Update(GameTime gameTime)
         {
             MouseState ms = Mouse.GetState();
 
             processMouseMovement(ms);
-
-            base.Update(gameTime);
         }
 
         /// <summary>
@@ -191,7 +182,7 @@ namespace TileEngine
             this.MouseSquareY = relativeSquareY;
         }
 
-        public override void Draw(GameTime gameTime)
+        public void Draw(GameTime gameTime)
         {
             spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
 
@@ -255,8 +246,6 @@ namespace TileEngine
             }
 
             spriteBatch.End();
-
-            base.Draw(gameTime);
         }
     }
 }

@@ -18,7 +18,8 @@ namespace TileEngineDemo
     public class Game1 : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
-        TileMapComponent tileMapComponent;
+        TileMapVisualizer mapVisualizer;
+        TileMapComponent mapComponent;
 
         public Game1()
         {
@@ -35,8 +36,9 @@ namespace TileEngineDemo
         /// </summary>
         protected override void Initialize()
         {
-            tileMapComponent = new TileMapComponent(this, @"Textures\TileSets\TileSheet");
-            Components.Add(tileMapComponent);
+            mapVisualizer = new TileMapVisualizer(this, @"Textures\TileSets\TileSheet");
+            mapComponent = new TileMapComponent(this, mapVisualizer);
+            Components.Add(mapComponent);
 
             base.Initialize();
         }
@@ -47,10 +49,10 @@ namespace TileEngineDemo
         /// </summary>
         protected override void LoadContent()
         {
-            tileMapComponent.SetViewDimensions(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
+            mapVisualizer.SetViewDimensions(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
 
             SpriteFont font = Content.Load<SpriteFont>("Fonts/Segoe");
-            tileMapComponent.Font = font;
+            mapVisualizer.Font = font;
 
             BuildDefaultTiles();
         }
@@ -58,10 +60,10 @@ namespace TileEngineDemo
         private void BuildDefaultTiles()
         {
             MapCell[,] houseBlock = constructHouse();
-            tileMapComponent.MyMap.AddConstructedBlock(houseBlock, 5, 5);
-            tileMapComponent.MyMap.AddConstructedBlock(houseBlock, 5, 7);
-            tileMapComponent.MyMap.AddConstructedBlock(houseBlock, 5, 10);
-            tileMapComponent.MyMap.AddConstructedBlock(houseBlock, 5, 12);
+            mapVisualizer.MyMap.AddConstructedBlock(houseBlock, 5, 5);
+            mapVisualizer.MyMap.AddConstructedBlock(houseBlock, 5, 7);
+            mapVisualizer.MyMap.AddConstructedBlock(houseBlock, 5, 10);
+            mapVisualizer.MyMap.AddConstructedBlock(houseBlock, 5, 12);
         }
 
         /// <summary>

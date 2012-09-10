@@ -5,7 +5,7 @@ using System.Text;
 
 namespace TileEngine
 {
-    public static class Numerical
+    static class Numerical
     {
         public const uint cutOff = (1 << 16) - 1; //use & to get just the first 16 digits of your number
 
