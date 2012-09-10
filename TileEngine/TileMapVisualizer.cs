@@ -48,7 +48,7 @@ namespace TileEngine
             baseOffsetY = -Tile.TileHeight + Tile.TileStepY;
         }
 
-        public void Initialize()
+        public virtual void Initialize()
         {
             MyMap = makeMap();
         }
@@ -58,7 +58,7 @@ namespace TileEngine
             return new TileMap();
         }
 
-        public void LoadContent()
+        public virtual void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(game.GraphicsDevice);
@@ -82,7 +82,7 @@ namespace TileEngine
             this.SetViewDimensions(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
         }
 
-        public void Update(GameTime gameTime)
+        public virtual void Update(GameTime gameTime)
         {
             MouseState ms = Mouse.GetState();
 
@@ -182,7 +182,7 @@ namespace TileEngine
             this.MouseSquareY = relativeSquareY;
         }
 
-        public void Draw(GameTime gameTime)
+        public virtual void Draw(GameTime gameTime)
         {
             spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
 
