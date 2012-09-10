@@ -20,6 +20,14 @@ Currently that doesn't mean a whole lot,
 but you can wander in every direction forever,
 over a persistent (but pretty boring) world.
 
+Usage-wise, a main design goal for the engine is that
+as a _coder_, you can safely ignore the isometric
+perspective of the world.  Instead, design for a square
+world, with cartesian blocks, and witness the tilted
+perspective just sort of emerge.
+
+Obviously the artist will not have this same experience!
+
 How?
 ----
 
