@@ -9,9 +9,9 @@ namespace TileEngineDemo
 {
     public class TileMapComponent : DrawableGameComponent
     {
-        private TileMapVisualizer map { get; set; }
+        private TileMapManager map { get; set; }
 
-        public TileMapComponent(Game1 game, TileMapVisualizer map)
+        public TileMapComponent(Game1 game, TileMapManager map)
             : base(game)
         {
             this.map = map;

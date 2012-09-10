@@ -32,15 +32,31 @@ namespace TileEngine
         static public int TileStepY = 16;
 
         /// <summary>
-        /// The amount of extra offset to put on the tile if the row has an odd index
-        /// (this gives an alternating effect)
-        /// </summary>
-        static public int OddRowXOffset = 32;
-
-        /// <summary>
         /// The height represented by each tile in MapCell.HeightTiles
         /// </summary>
         static public int HeightTileOffset = 32;
+
+        /// <summary>
+        /// For in-game coordinates, this is how "tall" the tile is,
+        /// in the y-dimension.
+        /// </summary>
+        static public int TileInGameHeight = 32;
+
+        /// <summary>
+        /// Literally and always TileInGameHeight/2, but saves a division, I guess
+        /// </summary>
+        static public int TileInGameHeightHalf = 16;
+
+        /// <summary>
+        /// For in-game coordinates, this is how "wide" the tile is,
+        /// in the x-dimension.
+        /// </summary>
+        static public int TileInGameWidth = 32;
+
+        /// <summary>
+        /// Literally and always TileInGameWidth/2, but saves a division, I guess
+        /// </summary>
+        static public int TileInGameWidthHalf = 16;
 
         /// <summary>
         /// Returns the rectangle needed to draw the tile at a specific index

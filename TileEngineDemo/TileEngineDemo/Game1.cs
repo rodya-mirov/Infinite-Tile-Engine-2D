@@ -18,7 +18,7 @@ namespace TileEngineDemo
     public class Game1 : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
-        TileMapVisualizer mapVisualizer;
+        TileMapManagerExtension mapVisualizer;
         TileMapComponent mapComponent;
 
         public Game1()
@@ -36,7 +36,7 @@ namespace TileEngineDemo
         /// </summary>
         protected override void Initialize()
         {
-            mapVisualizer = new TileMapVisualizer(this, @"Textures\TileSets\TileSheet");
+            mapVisualizer = new TileMapManagerExtension(this, @"Textures\TileSets\TileSheet");
             mapComponent = new TileMapComponent(this, mapVisualizer);
             Components.Add(mapComponent);
 

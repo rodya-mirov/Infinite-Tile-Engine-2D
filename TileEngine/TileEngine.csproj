@@ -93,6 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Camera.cs" />
+    <Compile Include="InGameObject.cs" />
     <Compile Include="MapCache.cs" />
     <Compile Include="MapCell.cs" />
     <Compile Include="MapSaved.cs" />
@@ -100,7 +101,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tile.cs" />
     <Compile Include="TileMap.cs" />
-    <Compile Include="TileMapVisualizer.cs" />
+    <Compile Include="TileMapManager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />

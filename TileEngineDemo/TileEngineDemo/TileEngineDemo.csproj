@@ -107,10 +107,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NPCexample.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="TileMapComponent.cs" />
+    <Compile Include="TileMapManagerExtension.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

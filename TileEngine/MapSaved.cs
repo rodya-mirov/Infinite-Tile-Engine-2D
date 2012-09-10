@@ -148,7 +148,7 @@ namespace TileEngine
         {
             SortedPoint sp = new SortedPoint(x, y);
             if (savedCells.ContainsKey(sp))
-                savedCells.Keys.Remove(sp);
+                savedCells.Remove(sp);
         }
     }
 }

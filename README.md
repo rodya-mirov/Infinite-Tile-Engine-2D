@@ -55,8 +55,20 @@ There is support for mouse action (that is, the engine
 automatically tracks the most recently moused-over
 square) so the user won't have to.
 
-A small demo is attached which gives an example
+There is support for in-game objects (with a focus on NPCs).
+
+Sample Code?
+------------
+
+Since this is an engine, it seems useful to attach a
+toy project which uses the features in a minimal way,
+to expose the functionality while remaining small.  With this
+in mind, a small demo is attached which gives an example
 of manually created content.
+
+Currently, the demo world is an infinite green field
+(procedural generation not used much) with a few hand-made
+houses and a few random-walking NPCs.
 
 The tiles used in the demo (except the solid color
 tiles) were made by Seth Galbraith, and are available
@@ -64,6 +76,10 @@ at [OpenGameArt][oga2].  They are intended to be used
 in conjunction with [Yar's work][oga1], which was used
 in previous versions of this project, but is not in
 the current build.
+
+A few (solid color) tiles, as well as the line-art
+person, were drawn by me, and are licensed under the
+same license as the rest of the project.
 
 [oga1]: http://opengameart.org/content/isometric-64x64-outside-tileset
 [oga2]: http://opengameart.org/content/isometric-64x64-medieval-building-tileset
