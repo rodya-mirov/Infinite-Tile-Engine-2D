@@ -78,47 +78,47 @@ namespace TileEngineDemo
 
             //0, 0, left corner
             cell = new MapCell(70, 0, 0);
-            cell.AddHeightTile(91);
-            cell.AddHeightTile(31);
+            cell.AddTile(91, 0);
+            cell.AddTile(31, 1);
             houseBlock[0, 0] = cell;
 
             //0, 2, top corner
             cell = new MapCell(70, 0, 1);
-            cell.AddHeightTile(51);
+            cell.AddTile(51, 0);
             houseBlock[0, 1] = cell;
 
             //1, 0, bottom wall
             cell = new MapCell(70, 1, 0);
-            cell.AddHeightTile(91);
-            cell.AddHeightTile(31);
+            cell.AddTile(91, 0);
+            cell.AddTile(31, 1);
             houseBlock[1, 0] = cell;
 
             //1, 1, top wall
             cell = new MapCell(70, 1, 1);
-            cell.AddHeightTile(60);
+            cell.AddTile(60, 0);
             houseBlock[1, 1] = cell;
 
             //2, 0, bottom wall
             cell = new MapCell(70, 2, 0);
-            cell.AddHeightTile(91);
-            cell.AddHeightTile(31);
+            cell.AddTile(91, 0);
+            cell.AddTile(31, 1);
             houseBlock[2, 0] = cell;
 
             //2, 1, top wall
             cell = new MapCell(70, 2, 1);
-            cell.AddHeightTile(60);
+            cell.AddTile(60, 0);
             houseBlock[2, 1] = cell;
 
             //3, 0, right corner
             cell = new MapCell(70, 3, 0);
-            cell.AddHeightTile(91);
-            cell.AddHeightTile(31);
+            cell.AddTile(91, 0);
+            cell.AddTile(31, 1);
             houseBlock[3, 0] = cell;
 
             //3, 1, bottom corner
             cell = new MapCell(70, 3, 1);
-            cell.AddHeightTile(94);
-            cell.AddHeightTile(37);
+            cell.AddTile(94, 0);
+            cell.AddTile(37, 1);
             houseBlock[3, 1] = cell;
 
             //send it out!

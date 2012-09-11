@@ -13,6 +13,113 @@ namespace TileEngine
         public int X { get; private set; }
         public int Y { get; private set; }
 
+        private SortedDictionary<int, Stack<int>> Tiles { get; set; }
+
+        /// <summary>
+        /// Constructs a new MapCell with the specified base tile at the specified coordinates.
+        /// </summary>
+        /// <param name="baseTile"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        public MapCell(int baseTile, int x, int y)
+        {
+            this.X = x;
+            this.Y = y;
+
+            Tiles = new SortedDictionary<int, Stack<int>>();
+            Tiles[0] = new Stack<int>();
+
+            Tiles[0].Push(baseTile);
+        }
+
+        /// <summary>
+        /// Constructs a new MapCell at the specified coordinates which is otherwise
+        /// identical to the specified cell
+        /// </summary>
+        /// <param name="toCopy"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        public MapCell(MapCell toCopy, int x, int y)
+        {
+            this.X = x;
+            this.Y = y;
+
+            Tiles = new SortedDictionary<int, Stack<int>>();
+
+            foreach (int key in toCopy.Tiles.Keys)
+            {
+                Stack<int> tileLevel = new Stack<int>();
+
+                foreach (int tile in toCopy.Tiles[key])
+                    tileLevel.Push(tile);
+
+                tileLevel.Reverse();
+                Tiles[key] = tileLevel;
+            }
+        }
+
+        /// <summary>
+        /// Adds a tile to the specified height level of the Cell
+        /// </summary>
+        /// <param name="tileID"></param>
+        /// <param name="level"></param>
+        public void AddTile(int tileID, int level)
+        {
+            if (!Tiles.Keys.Contains(level))
+                Tiles[level] = new Stack<int>();
+
+            Tiles[level].Push(tileID);
+        }
+        
+        /// <summary>
+        /// Draws the cell.
+        /// 
+        /// If the font is supplied and non-null, coordinates will be drawn in the center of the cell.
+        /// </summary>
+        /// <param name="spriteBatch">An active spritebatch to draw the cell</param>
+        /// <param name="xDrawPosition">The left-x pixel coordinate to draw at</param>
+        /// <param name="yDrawPosition">The top-y pixel coordinate to draw at</param>
+        /// <param name="startingDepth">The depth value of the bottom-most part of the cell.</param>
+        /// <param name="heightRowDepthMod">The amount to decrease the depth with each stacked tile.</param>
+        /// <param name="font">The font to draw the coordinates in</param>
+        public void DrawCell(SpriteBatch spriteBatch, int xDrawPosition, int yDrawPosition,
+            float startingDepth, float heightRowDepthMod)
+        {
+            float depth = startingDepth;
+
+            foreach (int level in Tiles.Keys)
+            {
+                int heightOffset = level * Tile.HeightTileOffset;
+
+                foreach (int tileID in Tiles[level])
+                {
+                    spriteBatch.Draw(
+                        Tile.TileSetTexture,
+                        new Rectangle(
+                            xDrawPosition,
+                            yDrawPosition - heightOffset,
+                            Tile.TileWidth,
+                            Tile.TileHeight
+                            ),
+                        Tile.GetSourceRectangle(tileID),
+                        Color.White,
+                        0f,
+                        Vector2.Zero,
+                        SpriteEffects.None,
+                        depth - ((float)level) * heightRowDepthMod);
+
+                    depth -= heightRowDepthMod;
+                }
+            }
+        }
+    }
+
+    /*
+    public class MapCell
+    {
+        public int X { get; private set; }
+        public int Y { get; private set; }
+
         /// <summary>
         /// The list of tiles which exist "at ground level"
         /// </summary>
@@ -170,27 +277,6 @@ namespace TileEngine
 
                 depthMod += heightRowDepthMod;
             }
-
-            /*
-            //as a topper, draw the highlighted if necessary
-            if (isHighlighted)
-            {
-                spriteBatch.Draw(
-                    Tile.TileSetTexture,
-                    new Rectangle(
-                        xDrawPosition,
-                        yDrawPosition - (heightRow * Tile.HeightTileOffset),
-                        Tile.TileWidth,
-                        Tile.TileHeight),
-                    Tile.GetSourceRectangle((int)TileType.HIGHLIGHTED),
-                    Color.White,
-                    0.0f,
-                    Vector2.Zero,
-                    SpriteEffects.None,
-                    startingDepth - ((float)heightRow * heightRowDepthMod)
-                    );
-            }
-             */
         }
 
         /// <summary>
@@ -207,6 +293,7 @@ namespace TileEngine
             return this.Y - other.Y;
         }
     }
+    */
 
     public struct SortedPoint : IComparable<SortedPoint>
     {
