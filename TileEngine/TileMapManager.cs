@@ -73,7 +73,7 @@ namespace TileEngine
             Camera.ViewWidth = width;
             Camera.ViewHeight = height;
 
-            squaresWideToDraw = 1 + (int)((Math.Abs(baseOffsetX) + width) / (Tile.TileStepX * 2));
+            squaresWideToDraw = 2 + (int)((Math.Abs(baseOffsetX) + width) / (Tile.TileStepX * 2));
             squaresTallToDraw = (int)((Math.Abs(baseOffsetY) + height) / (Tile.TileStepY * 2));
         }
 
@@ -225,7 +225,9 @@ namespace TileEngine
 
                 Rectangle destinationRectangle = obj.MakeDestinationRectangle(firstX, firstY, offsetX, offsetY);
 
-                float depth = calculateDepthOffset(maxdepth, obj.squareX - firstX, obj.squareY - firstY) - heightRowDepthMod;
+                Rectangle objBox = obj.InWorldSquareBoundingBox;
+
+                float depth = calculateDepthOffset(maxdepth, objBox.Right - firstX, objBox.Top - firstY) - heightRowDepthMod;
 
                 spriteBatch.Draw(
                     obj.Texture,
@@ -241,7 +243,10 @@ namespace TileEngine
 
         protected virtual IEnumerable<InGameObject> InGameObjects
         {
-            get { return new List<InGameObject>(0); }
+            get
+            {
+                yield break;
+            }
         }
 
         private void drawTileMapCells(float maxdepth, int firstX, int firstY, int offsetX, int offsetY)

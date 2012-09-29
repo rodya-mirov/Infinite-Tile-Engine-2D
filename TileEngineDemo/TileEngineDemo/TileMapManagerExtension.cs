@@ -36,7 +36,8 @@ namespace TileEngineDemo
         {
             get
             {
-                return objects;
+                foreach (InGameObject obj in objects)
+                    yield return obj;
             }
         }
     }

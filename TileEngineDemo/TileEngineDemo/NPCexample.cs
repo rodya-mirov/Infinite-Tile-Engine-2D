@@ -36,7 +36,25 @@ namespace TileEngineDemo
             HighlightCell = new MapCell(1, 0, 0);
         }
 
-        private const int waitForTurn = 90;
+        private const int halfWidth = 10;
+        private const int width = halfWidth * 2;
+
+        private const int halfHeight = 10;
+        private const int height = halfHeight * 2;
+
+        public override Rectangle InWorldPixelBoundingBox
+        {
+            get
+            {
+                return new Rectangle(
+                    xPos - halfWidth,
+                    yPos - halfHeight,
+                    width,
+                    height);
+            }
+        }
+
+        private const int waitForTurn = 95;
         private int ticksSinceTurn = waitForTurn;
         private int sourceIndex = 0;
 
@@ -47,7 +65,14 @@ namespace TileEngineDemo
         {
             ticksSinceTurn++;
 
-            map.ClearOverrideAtPosition(squareX, squareY);
+            Rectangle bounds = this.InWorldSquareBoundingBox;
+            for (int x = bounds.Left; x <= bounds.Right; x++)
+            {
+                for (int y = bounds.Top; y <= bounds.Bottom; y++)
+                {
+                    map.ClearOverrideAtPosition(x, y);
+                }
+            }
 
             if (ticksSinceTurn >= waitForTurn)
             {
@@ -87,7 +112,14 @@ namespace TileEngineDemo
             xPos += xVel;
             yPos += yVel;
 
-            map.SetOverride(HighlightCell, squareX, squareY);
+            bounds = this.InWorldSquareBoundingBox;
+            for (int x = bounds.Left; x <= bounds.Right; x++)
+            {
+                for (int y = bounds.Top; y <= bounds.Bottom; y++)
+                {
+                    map.SetOverride(HighlightCell, x, y);
+                }
+            }
         }
 
         public override Texture2D Texture

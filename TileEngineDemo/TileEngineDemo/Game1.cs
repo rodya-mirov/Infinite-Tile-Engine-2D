@@ -40,7 +40,15 @@ namespace TileEngineDemo
             mapComponent = new TileMapComponent(this, mapVisualizer);
             Components.Add(mapComponent);
 
+            Window.AllowUserResizing = true;
+            Window.ClientSizeChanged += new EventHandler<EventArgs>(Window_ClientSizeChanged);
+
             base.Initialize();
+        }
+
+        void Window_ClientSizeChanged(object sender, EventArgs e)
+        {
+            mapVisualizer.SetViewDimensions(Window.ClientBounds.Width, Window.ClientBounds.Height);
         }
 
         /// <summary>

@@ -25,25 +25,87 @@ namespace TileEngine
         public abstract Rectangle SourceRectangle { get; }
 
         /// <summary>
-        /// The x-coordinate square this best occupies
+        /// Constructs a rectangle bounding the object in the world.
+        /// The default behavior is a zero-width, zero-height box
+        /// centered at the supplied xPositionWorld,yPositionWorld
         /// </summary>
-        public virtual int squareX
+        /// <returns></returns>
+        public virtual Rectangle InWorldPixelBoundingBox
         {
             get
             {
-                return Numerical.intDivide(xPositionWorld + Tile.TileInGameWidthHalf, Tile.TileInGameWidth);
+                return new Rectangle(xPositionWorld, yPositionWorld, 0, 0);
             }
         }
 
         /// <summary>
-        /// The y-coordinate square this best occupies
+        /// Constructs a rectangle of all the squares which this object
+        /// touches.  Note that just because two objects touch the same
+        /// square does not necessarily mean they touch each other!
+        /// This is a very coarse bounding box.
         /// </summary>
-        public virtual int squareY
+        public virtual Rectangle InWorldSquareBoundingBox
         {
             get
             {
-                return Numerical.intDivide(yPositionWorld + Tile.TileInGameHeightHalf, Tile.TileInGameHeight);
+                Rectangle pixelBox = InWorldPixelBoundingBox;
+                Rectangle output = new Rectangle();
+
+                output.X = FindXSquare(pixelBox.X, pixelBox.Y);
+                output.Y = FindYSquare(pixelBox.X, pixelBox.Y);
+
+                int otherCornerX = FindXSquare(pixelBox.Right, pixelBox.Bottom);
+                int otherCornerY = FindYSquare(pixelBox.Right, pixelBox.Bottom);
+
+                output.Width = otherCornerX - output.X;
+                output.Height = otherCornerY - output.Y;
+
+                return output;
             }
+        }
+
+        /// <summary>
+        /// Calculates the X-Square coordinate from a given (in-game pixel) point
+        /// </summary>
+        /// <param name="xPos"></param>
+        /// <param name="yPos"></param>
+        /// <returns></returns>
+        protected int FindXSquare(int xPos, int yPos)
+        {
+            return Numerical.intDivide(xPos + Tile.TileInGameWidthHalf, Tile.TileInGameWidth);
+        }
+
+        /// <summary>
+        /// Calculates the Y-Square coordinate from a given (in-game pixel) point
+        /// </summary>
+        /// <param name="xPos"></param>
+        /// <param name="yPos"></param>
+        /// <returns></returns>
+        protected int FindYSquare(int xPos, int yPos)
+        {
+            return Numerical.intDivide(yPos + Tile.TileInGameHeightHalf, Tile.TileInGameHeight);
+        }
+
+        /// <summary>
+        /// Calculates the X-Ingame-pixel coordinate from a given square point
+        /// </summary>
+        /// <param name="xSquare"></param>
+        /// <param name="ySquare"></param>
+        /// <returns></returns>
+        protected int FindXCoordinate(int xSquare, int ySquare)
+        {
+            return xSquare * Tile.TileInGameWidth;
+        }
+
+        /// <summary>
+        /// Calculates the Y-Ingame-pixel coordinate from a given square point
+        /// </summary>
+        /// <param name="xSquare"></param>
+        /// <param name="ySquare"></param>
+        /// <returns></returns>
+        protected int FindYCoordinate(int xSquare, int ySquare)
+        {
+            return ySquare * Tile.TileInGameHeight;
         }
 
         /// <summary>

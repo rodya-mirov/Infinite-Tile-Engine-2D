@@ -13,8 +13,8 @@ namespace TileEngine
         /// small enough that you don't have much extra (or it's just extra work to
         /// keep it current, and no gain)
         /// </summary>
-        public const int cacheWidth = 64;
-        public const int cacheHeight = 64;
+        public const int cacheWidth = 96;
+        public const int cacheHeight = 96;
 
         private MapCell[,] cache;
         private TileMap map;
