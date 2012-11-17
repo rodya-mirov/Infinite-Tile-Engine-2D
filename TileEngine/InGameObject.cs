@@ -63,6 +63,18 @@ namespace TileEngine
                 return output;
             }
         }
+        
+        /// <summary>
+        /// Finds the square coordinate of this object.
+        /// </summary>
+        /// <returns></returns>
+        public Point SquareCoordinate()
+        {
+            return new Point(
+                FindXSquare(xPositionWorld, yPositionWorld),
+                FindYSquare(xPositionWorld, yPositionWorld)
+                );
+        }
 
         /// <summary>
         /// Calculates the X-Square coordinate from a given (in-game pixel) point
