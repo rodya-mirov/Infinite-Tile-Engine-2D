@@ -20,6 +20,9 @@ namespace TileEngineDemo
         GraphicsDeviceManager graphics;
         TileMapManagerExtension mapVisualizer;
         TileMapComponent mapComponent;
+        FPSComponent fpsComponent;
+
+        SpriteFont segoe, bigSegoe;
 
         public Game1()
         {
@@ -40,6 +43,9 @@ namespace TileEngineDemo
             mapComponent = new TileMapComponent(this, mapVisualizer);
             Components.Add(mapComponent);
 
+            fpsComponent = new FPSComponent(this);
+            Components.Add(fpsComponent);
+
             Window.AllowUserResizing = true;
             Window.ClientSizeChanged += new EventHandler<EventArgs>(Window_ClientSizeChanged);
 
@@ -59,8 +65,11 @@ namespace TileEngineDemo
         {
             mapVisualizer.SetViewDimensions(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
 
-            SpriteFont font = Content.Load<SpriteFont>("Fonts/Segoe");
-            mapVisualizer.Font = font;
+            segoe = Content.Load<SpriteFont>("Fonts/Segoe");
+            mapVisualizer.Font = segoe;
+
+            bigSegoe = Content.Load<SpriteFont>("Fonts/BigSegoe");
+            fpsComponent.Font = bigSegoe;
 
             BuildDefaultTiles();
         }

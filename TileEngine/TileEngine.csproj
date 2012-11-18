@@ -93,6 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Camera.cs" />
+    <Compile Include="FPSComponent.cs" />
     <Compile Include="InGameObject.cs" />
     <Compile Include="MapCache.cs" />
     <Compile Include="MapCell.cs" />
