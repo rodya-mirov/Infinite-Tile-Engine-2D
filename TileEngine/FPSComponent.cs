@@ -9,8 +9,8 @@ namespace TileEngine
 {
     public class FPSComponent : DrawableGameComponent
     {
-        private int numFramesSinceReset;
-        string fps;
+        private int drawsSinceReset, updatesSinceReset;
+        string drawnFPS, logicFPS;
 
         private TimeSpan timeSpan;
         private TimeSpan interval;
@@ -18,7 +18,7 @@ namespace TileEngine
         public SpriteFont Font { get; set; }
         private SpriteBatch batch;
 
-        private Vector2 position1, position2;
+        private Vector2 position1, position2, position3, position4;
 
         private Color defaultColor = Color.White;
 
@@ -41,32 +41,45 @@ namespace TileEngine
             this.Font = Font;
             batch = new SpriteBatch(game.GraphicsDevice);
 
-            numFramesSinceReset = 0;
-            fps = "FPS: 0";
+            drawsSinceReset = 0;
+            drawnFPS = "D FPS: 0";
+            logicFPS = "L FPS: 0";
 
             position1 = new Vector2(30, 30);
             position2 = new Vector2(30, 31);
+            position3 = new Vector2(30, 50);
+            position4 = new Vector2(30, 51);
 
             Visible = true;
         }
 
+        public override void Update(GameTime gameTime)
+        {
+            updatesSinceReset++;
+        }
+
         public override void Draw(GameTime gameTime)
         {
-            numFramesSinceReset++;
+            drawsSinceReset++;
             timeSpan += gameTime.ElapsedGameTime;
 
             if (timeSpan > interval)
             {
-                fps = "FPS: " + ((2 * numFramesSinceReset).ToString());
+                drawnFPS = "Draws FPS: " + ((2 * drawsSinceReset).ToString());
+                logicFPS = "Logic FPS: " + ((2 * updatesSinceReset).ToString());
                 timeSpan -= interval;
-                numFramesSinceReset = 0;
+
+                drawsSinceReset = 0;
+                updatesSinceReset = 0;
             }
 
             if (Visible)
             {
                 batch.Begin();
-                batch.DrawString(Font, fps, position2, Color.Black);
-                batch.DrawString(Font, fps, position1, Color.White);
+                batch.DrawString(Font, drawnFPS, position2, Color.Black);
+                batch.DrawString(Font, drawnFPS, position1, Color.White);
+                batch.DrawString(Font, logicFPS, position4, Color.Black);
+                batch.DrawString(Font, logicFPS, position3, Color.White);
                 batch.End();
             }
 
