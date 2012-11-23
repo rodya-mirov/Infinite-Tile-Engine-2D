@@ -22,7 +22,10 @@ namespace TileEngine
 
         private Color defaultColor = Color.White;
 
-        public bool ShouldDisplay { get; set; }
+        public void ToggleVisible()
+        {
+            this.Visible = !this.Visible;
+        }
 
         /// <summary>
         /// Construct a new FPSComponent, which will automagically
@@ -50,7 +53,7 @@ namespace TileEngine
             position3 = new Vector2(30, 50);
             position4 = new Vector2(30, 51);
 
-            ShouldDisplay = true;
+            Visible = true;
         }
 
         public override void Update(GameTime gameTime)
@@ -73,25 +76,14 @@ namespace TileEngine
                 updatesSinceReset = 0;
             }
 
-            if (ShouldDisplay)
-            {
-                batch.Begin();
-                batch.DrawString(Font, drawnFPS, position2, Color.Black);
-                batch.DrawString(Font, drawnFPS, position1, Color.White);
-                batch.DrawString(Font, logicFPS, position4, Color.Black);
-                batch.DrawString(Font, logicFPS, position3, Color.White);
-                batch.End();
-            }
+            batch.Begin();
+            batch.DrawString(Font, drawnFPS, position2, Color.Black);
+            batch.DrawString(Font, drawnFPS, position1, Color.White);
+            batch.DrawString(Font, logicFPS, position4, Color.Black);
+            batch.DrawString(Font, logicFPS, position3, Color.White);
+            batch.End();
 
             base.Draw(gameTime);
-        }
-
-        /// <summary>
-        /// Toggles visibility
-        /// </summary>
-        public void ToggleShouldDisplay()
-        {
-            this.ShouldDisplay = !this.ShouldDisplay;
         }
     }
 }

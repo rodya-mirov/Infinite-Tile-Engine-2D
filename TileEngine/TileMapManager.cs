@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace TileEngine
 {
-    public class TileMapManager
+    public abstract class TileMapManager
     {
         SpriteBatch spriteBatch;
 
@@ -295,5 +295,29 @@ namespace TileEngine
         {
             return 0.7f - ((x - (y * Tile.TileWidth)) / maxdepth);
         }
+
+        #region Pathing Assistance
+        /// <summary>
+        /// Returns an enumeration of the points which can be directly moved to
+        /// from the specified point on the map.  Any point (at all!) should be in this
+        /// enumeration if and only if it will pass CanMoveFromSquareToSquare
+        /// with the specified start point.
+        /// </summary>
+        /// <param name="X"></param>
+        /// <param name="Y"></param>
+        /// <returns></returns>
+        public abstract IEnumerable<Point> GetAdjacentPoints(int X, int Y);
+
+        
+        /// <summary>
+        /// Determines whether one can move directly from the start square to the end square.
+        /// </summary>
+        /// <param name="startX"></param>
+        /// <param name="startY"></param>
+        /// <param name="endX"></param>
+        /// <param name="endY"></param>
+        /// <returns></returns>
+        public abstract bool CanMoveFromSquareToSquare(int startX, int startY, int endX, int endY);
+        #endregion
     }
 }
