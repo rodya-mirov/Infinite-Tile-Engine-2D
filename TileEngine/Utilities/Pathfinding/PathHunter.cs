@@ -37,19 +37,10 @@ namespace TileEngine.Utilities.Pathfinding
         /// <param name="maxCost">Maximum cost of any path.</param>
         /// <param name="manager">The WorldManager that we use to do our pathing.</param>
         /// <returns></returns>
-        public static Path GetPath(Point startPoint, IEnumerable<Point> destinations, int maxCost, TileMapManager manager)
+        public static Path GetPath(Point startPoint, HashSet<Point> goalPoints, int maxCost, TileMapManager manager)
         {
-            //first, set up the set of destinations
-            HashSet<Point> goalPoints = new HashSet<Point>();
-            Point firstPoint = Point.Zero;
-            foreach (Point p in destinations)
-            {
-                firstPoint = p;
-                goalPoints.Add(p);
-            }
-
             //check for trivialities- we can't find a path to nowhere
-            if (destinations.Count() == 0)
+            if (goalPoints.Count() == 0)
                 return null;
 
             // ... and we don't need to search if we're already there
@@ -61,12 +52,18 @@ namespace TileEngine.Utilities.Pathfinding
             Dictionary<Point, int> bestDistancesFound = new Dictionary<Point, int>();
             bestDistancesFound[startPoint] = 0;
 
-            Heap<Path> heap;
+            Heap<Path> heap = null;
 
-            if (destinations.Count() == 1)
-                heap = new PathToPointHeap(firstPoint);
+            if (goalPoints.Count() == 1)
+            {
+                //looks funny, but as an unindexed collection, I don't know a better way
+                foreach (Point p in goalPoints)
+                    heap = new PathToPointHeap(p);
+            }
             else
+            {
                 heap = new PathHeap();
+            }
 
             heap.Add(new Path(startPoint));
 

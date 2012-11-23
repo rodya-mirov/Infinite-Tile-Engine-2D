@@ -65,6 +65,16 @@ square) so the user won't have to.
 
 There is support for in-game objects (with a focus on NPCs).
 
+Direction?
+----------
+
+This project is developed symbiotically with my other project,
+Operation Cow Mouse (named for my pet, rather than subject matter!).
+Essentially, new functionality will be added there, and if I feel
+it's useful generally, it will be generalized and added back
+into this project.  This is why (for example) pathfinding has now
+been added.
+
 Sample Code?
 ------------
 
