@@ -22,10 +22,10 @@ namespace TileEngine
         public Game game { get; protected set; }
 
         #region Passability Information
-        public GameTime LastPassabilityUpdate { get; protected set; }
+        public TimeSpan LastPassabilityUpdate { get; protected set; }
         public void UpdatePassability(GameTime currentTime)
         {
-            this.LastPassabilityUpdate = currentTime;
+            this.LastPassabilityUpdate = currentTime.TotalGameTime;
         }
         #endregion
 

@@ -33,11 +33,39 @@ namespace TileEngine.Utilities.Pathfinding
         /// Assumes no negative cost paths, as in Djikstra's algorithm
         /// </summary>
         /// <param name="startPoint">The point we start from.</param>
-        /// <param name="destinations">List of possible destinations we could be happy with.</param>
+        /// <param name="goalPoints">The set of possible destinations we could be happy with.</param>
         /// <param name="maxCost">Maximum cost of any path.</param>
         /// <param name="manager">The WorldManager that we use to do our pathing.</param>
-        /// <returns></returns>
+        /// <param name="startTime">The time we start the algorithm.</param>
+        /// <returns>The shortest path from here to somewhere in there; returns null iff there is no path of cost less than maxCost.</returns>
         public static Path GetPath(Point startPoint, HashSet<Point> goalPoints, int maxCost, TileMapManager manager, GameTime startTime)
+        {
+            return PathHunter.GetPath(startPoint, goalPoints, maxCost, manager, startTime.TotalGameTime);
+        }
+
+        /// <summary>
+        /// This constructs a path from the specified start point to
+        /// some point in the set of destinations.
+        /// 
+        /// Will only construct paths up to a certain maximum COST;
+        /// as of now, going from one square to another costs 1 unit.
+        /// So the maximum cost is the maximum path length.
+        /// 
+        /// Returns null if no path was found.
+        /// 
+        /// Running time (if no path is found, the worst case) is O(k+n^2), where
+        ///        n=maxCost
+        ///        k=destinations.Count
+        /// 
+        /// Assumes no negative cost paths, as in Djikstra's algorithm
+        /// </summary>
+        /// <param name="startPoint">The point we start from.</param>
+        /// <param name="goalPoints">The set of possible destinations we could be happy with.</param>
+        /// <param name="maxCost">Maximum cost of any path.</param>
+        /// <param name="manager">The WorldManager that we use to do our pathing.</param>
+        /// <param name="startTime">The time we start the algorithm.</param>
+        /// <returns>The shortest path from here to somewhere in there; returns null iff there is no path of cost less than maxCost.</returns>
+        public static Path GetPath(Point startPoint, HashSet<Point> goalPoints, int maxCost, TileMapManager manager, TimeSpan startTime)
         {
             //check for trivialities- we can't find a path to nowhere
             if (goalPoints.Count() == 0)
@@ -71,7 +99,7 @@ namespace TileEngine.Utilities.Pathfinding
             {
                 //if there's new passability information, start the process over
                 if (manager.LastPassabilityUpdate != null && //if it's null, we're definitely OK
-                    startTime.ElapsedGameTime < manager.LastPassabilityUpdate.ElapsedGameTime)
+                    startTime < manager.LastPassabilityUpdate)
                 {
                     startTime = manager.LastPassabilityUpdate;
 
@@ -125,6 +153,11 @@ namespace TileEngine.Utilities.Pathfinding
         }
     }
 
+    /// <summary>
+    /// Like the PathHeap, but with a direction, so that we can estimate the cost
+    /// of a path to be the cost so far, plus the Manhattan distance from the end
+    /// of our path to the goal point.
+    /// </summary>
     class PathToPointHeap : Heap<Path>
     {
         private int startX, startY;
