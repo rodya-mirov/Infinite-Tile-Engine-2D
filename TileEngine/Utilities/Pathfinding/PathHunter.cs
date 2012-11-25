@@ -98,10 +98,10 @@ namespace TileEngine.Utilities.Pathfinding
             while (heap.Count > 0)
             {
                 //if there's new passability information, start the process over
-                if (manager.LastPassabilityUpdate != null && //if it's null, we're definitely OK
-                    startTime < manager.LastPassabilityUpdate)
+                if (manager.LastGeneralPassabilityUpdate != null && //if it's null, we're definitely OK
+                    startTime < manager.LastGeneralPassabilityUpdate)
                 {
-                    startTime = manager.LastPassabilityUpdate;
+                    startTime = manager.LastGeneralPassabilityUpdate;
 
                     heap.Clear();
                     heap.Add(new Path(startPoint));

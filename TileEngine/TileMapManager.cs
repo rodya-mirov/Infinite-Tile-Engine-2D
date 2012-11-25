@@ -22,10 +22,72 @@ namespace TileEngine
         public Game game { get; protected set; }
 
         #region Passability Information
-        public TimeSpan LastPassabilityUpdate { get; protected set; }
-        public void UpdatePassability(GameTime currentTime)
+        /// <summary>
+        /// Represents the latest time that the passability
+        /// information was changed.  This is, by definition and
+        /// implementation, the maximum of LastEasierPassabilityUpdate
+        /// and LastHarderPassabilityUpdate.
+        /// 
+        /// Is null if and only if passability has never been updated.
+        /// </summary>
+        public TimeSpan LastGeneralPassabilityUpdate
         {
-            this.LastPassabilityUpdate = currentTime.TotalGameTime;
+            get
+            {
+                if (LastEasierPassabilityUpdate == null)
+                    return LastHarderPassabilityUpdate;
+                else if (LastHarderPassabilityUpdate == null)
+                    return LastEasierPassabilityUpdate;
+                else if (LastEasierPassabilityUpdate > LastHarderPassabilityUpdate)
+                    return LastEasierPassabilityUpdate;
+                else
+                    return LastHarderPassabilityUpdate;
+            }
+        }
+
+        /// <summary>
+        /// Indicate that passability has been changed.
+        /// This triggers both PassabilityMadeEasier(currentTime)
+        /// and PassabilityMadeHarder(currentTime), and is therefore
+        /// something of a blunt instrument.
+        /// </summary>
+        /// <param name="currentTime"></param>
+        public void PassabilityChanged(GameTime currentTime)
+        {
+            PassabilityMadeEasier(currentTime);
+            PassabilityMadeHarder(currentTime);
+        }
+
+        /// <summary>
+        /// The latest time that passability was made easier.
+        /// That is, when there were more paths available than before.
+        /// </summary>
+        public TimeSpan LastEasierPassabilityUpdate { get; protected set; }
+
+        /// <summary>
+        /// Indicate that passability has been made easier; that
+        /// is, there are more allowable paths than before.
+        /// </summary>
+        /// <param name="currentTime"></param>
+        public void PassabilityMadeEasier(GameTime currentTime)
+        {
+            this.LastEasierPassabilityUpdate = currentTime.TotalGameTime;
+        }
+
+        /// <summary>
+        /// The latest time that passability was made harder.
+        /// That is, when there were fewer paths available than before.
+        /// </summary>
+        public TimeSpan LastHarderPassabilityUpdate { get; protected set; }
+
+        /// <summary>
+        /// Indicate that passability has been made harder; that
+        /// is, there are fewer allowable paths than before.
+        /// </summary>
+        /// <param name="currentTime"></param>
+        public void PassabilityMadeHarder(GameTime currentTime)
+        {
+            this.LastHarderPassabilityUpdate = currentTime.TotalGameTime;
         }
         #endregion
 
