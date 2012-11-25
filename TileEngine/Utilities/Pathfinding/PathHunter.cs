@@ -37,7 +37,7 @@ namespace TileEngine.Utilities.Pathfinding
         /// <param name="maxCost">Maximum cost of any path.</param>
         /// <param name="manager">The WorldManager that we use to do our pathing.</param>
         /// <returns></returns>
-        public static Path GetPath(Point startPoint, HashSet<Point> goalPoints, int maxCost, TileMapManager manager)
+        public static Path GetPath(Point startPoint, HashSet<Point> goalPoints, int maxCost, TileMapManager manager, GameTime startTime)
         {
             //check for trivialities- we can't find a path to nowhere
             if (goalPoints.Count() == 0)
@@ -69,6 +69,19 @@ namespace TileEngine.Utilities.Pathfinding
 
             while (heap.Count > 0)
             {
+                //if there's new passability information, start the process over
+                if (manager.LastPassabilityUpdate != null && //if it's null, we're definitely OK
+                    startTime.ElapsedGameTime < manager.LastPassabilityUpdate.ElapsedGameTime)
+                {
+                    startTime = manager.LastPassabilityUpdate;
+
+                    heap.Clear();
+                    heap.Add(new Path(startPoint));
+
+                    bestDistancesFound = new Dictionary<Point, int>();
+                    bestDistancesFound[startPoint] = 0;
+                }
+
                 Path bestPath = heap.Pop();
 
                 //if we didn't cap out our path length yet,
@@ -82,7 +95,7 @@ namespace TileEngine.Utilities.Pathfinding
                     {
                         //if we hit a destination, great, stop
                         if (goalPoints.Contains(adj))
-                            return new Path(bestPath, adj, 1);
+                            return new Path(bestPath, adj, newCost);
 
                         //don't bother adding this possible extension back on unless
                         //it's either a completely new point or a strict improvement over another path

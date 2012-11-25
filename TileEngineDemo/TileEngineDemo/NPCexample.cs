@@ -61,7 +61,7 @@ namespace TileEngineDemo
         private int xVel = 0;
         private int yVel = 0;
 
-        public override void Update()
+        public override void Update(GameTime gameTime)
         {
             ticksSinceTurn++;
 

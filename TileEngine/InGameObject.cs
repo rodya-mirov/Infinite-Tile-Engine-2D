@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using TileEngine.Utilies;
 
 namespace TileEngine
 {
@@ -12,7 +13,7 @@ namespace TileEngine
         /// <summary>
         /// General update method; should be called once per timestep.
         /// </summary>
-        public abstract void Update();
+        public abstract void Update(GameTime time);
 
         /// <summary>
         /// The current texture we should be drawing

@@ -141,5 +141,13 @@ namespace TileEngine.Utilities.DataStructures
         /// <param name="b"></param>
         /// <returns></returns>
         public abstract bool isBetter(T a, T b);
+
+        /// <summary>
+        /// Clears the heap completely.
+        /// </summary>
+        public void Clear()
+        {
+            baseList.Clear();
+        }
     }
 }

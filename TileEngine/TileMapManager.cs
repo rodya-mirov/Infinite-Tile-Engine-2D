@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using TileEngine.Utilies;
 
 namespace TileEngine
 {
@@ -19,6 +20,14 @@ namespace TileEngine
         public String ContentLocation { get; protected set; }
 
         public Game game { get; protected set; }
+
+        #region Passability Information
+        public GameTime LastPassabilityUpdate { get; protected set; }
+        public void UpdatePassability(GameTime currentTime)
+        {
+            this.LastPassabilityUpdate = currentTime;
+        }
+        #endregion
 
         #region Drawing Information
         /// <summary>
@@ -88,13 +97,13 @@ namespace TileEngine
 
             processMouseMovement(ms);
 
-            updateInGameObjects();
+            updateInGameObjects(gameTime);
         }
 
-        protected virtual void updateInGameObjects()
+        protected virtual void updateInGameObjects(GameTime gameTime)
         {
             foreach (InGameObject obj in InGameObjects)
-                obj.Update();
+                obj.Update(gameTime);
         }
 
         /// <summary>

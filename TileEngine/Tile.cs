@@ -7,6 +7,13 @@ using Microsoft.Xna.Framework;
 
 namespace TileEngine
 {
+    /// <summary>
+    /// A completely static class representing the
+    /// information about the tiles which make up
+    /// the world.  Includes a single static texture,
+    /// as well as integers representing the various
+    /// sizes.
+    /// </summary>
     public static class Tile
     {
         static public Texture2D TileSetTexture;
@@ -43,9 +50,13 @@ namespace TileEngine
         static public int TileInGameHeight = 32;
 
         /// <summary>
-        /// Literally and always TileInGameHeight/2, but saves a division, I guess
+        /// Literally and always TileInGameHeight/2
         /// </summary>
-        static public int TileInGameHeightHalf = 16;
+        static public int TileInGameHeightHalf
+        {
+            get { return TileInGameHeight / 2; }
+            set { TileInGameHeight = value * 2; }
+        }
 
         /// <summary>
         /// For in-game coordinates, this is how "wide" the tile is,
@@ -54,9 +65,13 @@ namespace TileEngine
         static public int TileInGameWidth = 32;
 
         /// <summary>
-        /// Literally and always TileInGameWidth/2, but saves a division, I guess
+        /// Literally and always TileInGameWidth/2
         /// </summary>
-        static public int TileInGameWidthHalf = 16;
+        static public int TileInGameWidthHalf
+        {
+            get { return TileInGameWidth / 2; }
+            set { TileInGameWidth = value * 2; }
+        }
 
         /// <summary>
         /// Returns the rectangle needed to draw the tile at a specific index
@@ -65,8 +80,10 @@ namespace TileEngine
         /// <returns>The source Rectangle required to draw it</returns>
         static public Rectangle GetSourceRectangle(int tileIndex)
         {
-            int tileY = tileIndex / (TileSetTexture.Width / TileWidth);
-            int tileX = tileIndex % (TileSetTexture.Width / TileWidth);
+            int tilesPerRow = TileSetTexture.Width / TileWidth;
+
+            int tileY = tileIndex / tilesPerRow;
+            int tileX = tileIndex % tilesPerRow;
 
             return new Rectangle(tileX * TileWidth, tileY * TileHeight, TileWidth, TileHeight);
         }
