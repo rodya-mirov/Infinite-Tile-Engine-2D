@@ -54,6 +54,67 @@ namespace TileEngine
         }
 
         /// <summary>
+        /// This should get a list of all the Square Coordinates which
+        /// are touched this object.  The default is to enumerate all the
+        /// square coordinates which are touched by the BoundingBox of this
+        /// object.
+        /// </summary>
+        /// <returns></returns>
+        public virtual IEnumerable<Point> SquareCoordinatesTouched()
+        {
+            Rectangle box = InWorldSquareBoundingBox;
+
+            int xmin = box.X;
+            int ymin = box.Y;
+            int xmax = xmin + box.Width;
+            int ymax = ymin + box.Height;
+
+            for (int x = xmin; x <= xmax; x++)
+            {
+                for (int y = ymin; y <= ymax; y++)
+                {
+                    yield return new Point(x, y);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Determines whether the specified point is inside
+        /// the square bounding box of this object.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public bool SquareBoundingBoxContains(int x, int y)
+        {
+            Rectangle box = this.InWorldSquareBoundingBox;
+            return (box.Left <= x && x <= box.Right && box.Top <= y && y <= box.Bottom);
+        }
+
+        /// <summary>
+        /// Determines whether the specified rectangle (using min
+        /// and max coordinates!) touches this object's square
+        /// bounding box.
+        /// </summary>
+        /// <param name="xmin"></param>
+        /// <param name="ymin"></param>
+        /// <param name="xmax"></param>
+        /// <param name="ymax"></param>
+        /// <returns></returns>
+        public bool SquareBoundingBoxTouches(int xmin, int ymin, int xmax, int ymax)
+        {
+            Rectangle box = this.InWorldSquareBoundingBox;
+
+            if (box.Right < xmin || xmax < box.Left)
+                return false;
+
+            if (box.Bottom < ymin || ymax < box.Top)
+                return false;
+
+            return true;
+        }
+
+        /// <summary>
         /// Constructs a rectangle of all the squares which this object
         /// touches.  Note that just because two objects touch the same
         /// square does not necessarily mean they touch each other!
