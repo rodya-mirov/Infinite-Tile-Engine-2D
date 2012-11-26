@@ -19,7 +19,7 @@ namespace TileEngineDemo
     {
         GraphicsDeviceManager graphics;
         TileMapManagerExtension mapVisualizer;
-        TileMapComponent mapComponent;
+        TileMapComponent<InGameObject> mapComponent;
         FPSComponent fpsComponent;
 
         SpriteFont segoe, bigSegoe;
@@ -40,7 +40,7 @@ namespace TileEngineDemo
         protected override void Initialize()
         {
             mapVisualizer = new TileMapManagerExtension(this, @"Textures\TileSets\TileSheet");
-            mapComponent = new TileMapComponent(this, mapVisualizer);
+            mapComponent = new TileMapComponent<InGameObject>(this, mapVisualizer);
             Components.Add(mapComponent);
 
             fpsComponent = new FPSComponent(this);

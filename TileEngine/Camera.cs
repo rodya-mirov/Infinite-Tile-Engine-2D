@@ -49,6 +49,36 @@ namespace TileEngine
         }
 
         /// <summary>
+        /// Gets the current pixel center of the viewable area.
+        /// </summary>
+        /// <returns></returns>
+        public static Point GetCenter()
+        {
+            return new Point(location.X + ViewWidth / 2, location.Y + ViewHeight / 2);
+        }
+
+        /// <summary>
+        /// Centers the Camera on the specified point.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public static void CenterOnPoint(int x, int y)
+        {
+            location.X = x - ViewWidth / 2;
+            location.Y = y - ViewHeight / 2;
+        }
+
+        /// <summary>
+        /// Centers the Camera on the specified point.
+        /// </summary>
+        /// <param name="p"></param>
+        public static void CenterOnPoint(Point p)
+        {
+            CenterOnPoint(p.X, p.Y);
+        }
+
+        /// <summary>
         /// Transforms "in-world" coordinates to "drawable" coordinates.
         /// </summary>
         /// <param name="worldPosition">The in-world coordinates</param>

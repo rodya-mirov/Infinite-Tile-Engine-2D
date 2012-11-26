@@ -7,11 +7,11 @@ using TileEngine;
 
 namespace TileEngineDemo
 {
-    public class TileMapComponent : DrawableGameComponent
+    public class TileMapComponent<InGameObjectType> : DrawableGameComponent where InGameObjectType : InGameObject
     {
-        private TileMapManager map { get; set; }
+        private TileMapManager<InGameObjectType> map { get; set; }
 
-        public TileMapComponent(Game1 game, TileMapManager map)
+        public TileMapComponent(Game1 game, TileMapManager<InGameObjectType> map)
             : base(game)
         {
             this.map = map;

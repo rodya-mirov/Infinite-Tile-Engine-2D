@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace TileEngineDemo
 {
-    public class TileMapManagerExtension : TileMapManager
+    public class TileMapManagerExtension : TileMapManager<InGameObject>
     {
         protected List<InGameObject> objects;
 
@@ -32,13 +32,10 @@ namespace TileEngineDemo
             NPCexample.LoadContent(this.game);
         }
 
-        protected override IEnumerable<InGameObject> InGameObjects
+        protected override IEnumerable<InGameObject> InGameObjects()
         {
-            get
-            {
-                foreach (InGameObject obj in objects)
-                    yield return obj;
-            }
+            foreach (InGameObject obj in objects)
+                yield return obj;
         }
 
         /// <summary>

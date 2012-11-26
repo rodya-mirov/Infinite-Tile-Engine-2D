@@ -9,7 +9,7 @@ using TileEngine.Utilies;
 
 namespace TileEngine
 {
-    public abstract class TileMapManager
+    public abstract class TileMapManager<InGameObjectType> where InGameObjectType:InGameObject
     {
         SpriteBatch spriteBatch;
 
@@ -164,7 +164,7 @@ namespace TileEngine
 
         protected virtual void updateInGameObjects(GameTime gameTime)
         {
-            foreach (InGameObject obj in InGameObjects)
+            foreach (InGameObjectType obj in InGameObjects())
                 obj.Update(gameTime);
         }
 
@@ -290,7 +290,7 @@ namespace TileEngine
 
         protected void drawInGameObjects(float maxdepth, int firstX, int firstY, int offsetX, int offsetY)
         {
-            foreach (InGameObject obj in InGameObjects)
+            foreach (InGameObject obj in InGameObjects())
             {
                 Rectangle sourceRectangle = obj.SourceRectangle;
 
@@ -312,12 +312,9 @@ namespace TileEngine
             }
         }
 
-        protected virtual IEnumerable<InGameObject> InGameObjects
+        protected virtual IEnumerable<InGameObjectType> InGameObjects()
         {
-            get
-            {
-                yield break;
-            }
+            yield break;
         }
 
         private void drawTileMapCells(float maxdepth, int firstX, int firstY, int offsetX, int offsetY)

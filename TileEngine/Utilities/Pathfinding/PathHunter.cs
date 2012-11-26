@@ -38,9 +38,10 @@ namespace TileEngine.Utilities.Pathfinding
         /// <param name="manager">The WorldManager that we use to do our pathing.</param>
         /// <param name="startTime">The time we start the algorithm.</param>
         /// <returns>The shortest path from here to somewhere in there; returns null iff there is no path of cost less than maxCost.</returns>
-        public static Path GetPath(Point startPoint, HashSet<Point> goalPoints, int maxCost, TileMapManager manager, GameTime startTime)
+        public static Path GetPath<T>(Point startPoint, HashSet<Point> goalPoints, int maxCost, TileMapManager<T> manager, GameTime startTime)
+            where T : InGameObject
         {
-            return PathHunter.GetPath(startPoint, goalPoints, maxCost, manager, startTime.TotalGameTime);
+            return PathHunter.GetPath<T>(startPoint, goalPoints, maxCost, manager, startTime.TotalGameTime);
         }
 
         /// <summary>
@@ -65,7 +66,8 @@ namespace TileEngine.Utilities.Pathfinding
         /// <param name="manager">The WorldManager that we use to do our pathing.</param>
         /// <param name="startTime">The time we start the algorithm.</param>
         /// <returns>The shortest path from here to somewhere in there; returns null iff there is no path of cost less than maxCost.</returns>
-        public static Path GetPath(Point startPoint, HashSet<Point> goalPoints, int maxCost, TileMapManager manager, TimeSpan startTime)
+        public static Path GetPath<T>(Point startPoint, HashSet<Point> goalPoints, int maxCost, TileMapManager<T> manager, TimeSpan startTime)
+            where T : InGameObject
         {
             //check for trivialities- we can't find a path to nowhere
             if (goalPoints.Count() == 0)
