@@ -41,15 +41,15 @@ namespace TileEngine
 
         /// <summary>
         /// Constructs a rectangle bounding the object in the world.
-        /// The default behavior is a zero-width, zero-height box
-        /// centered at the supplied xPositionWorld,yPositionWorld
+        /// The default behavior is a single pixel, which is located
+        /// at the supplied xPositionWorld,yPositionWorld
         /// </summary>
         /// <returns></returns>
         public virtual Rectangle InWorldPixelBoundingBox
         {
             get
             {
-                return new Rectangle(xPositionWorld, yPositionWorld, 0, 0);
+                return new Rectangle(xPositionWorld, yPositionWorld, 1, 1);
             }
         }
 
@@ -64,10 +64,10 @@ namespace TileEngine
         {
             Rectangle box = InWorldSquareBoundingBox;
 
-            int xmin = box.X;
-            int ymin = box.Y;
-            int xmax = xmin + box.Width;
-            int ymax = ymin + box.Height;
+            int xmin = box.Left;
+            int ymin = box.Top;
+            int xmax = box.Right - 1;
+            int ymax = box.Bottom - 1;
 
             for (int x = xmin; x <= xmax; x++)
             {
@@ -87,14 +87,16 @@ namespace TileEngine
         /// <returns></returns>
         public bool SquareBoundingBoxContains(int x, int y)
         {
-            Rectangle box = this.InWorldSquareBoundingBox;
-            return (box.Left <= x && x <= box.Right && box.Top <= y && y <= box.Bottom);
+            return this.InWorldSquareBoundingBox.Contains(x, y);
         }
 
         /// <summary>
         /// Determines whether the specified rectangle (using min
         /// and max coordinates!) touches this object's square
         /// bounding box.
+        /// 
+        /// Assume the point (xmax, ymax) is in the parameter
+        /// rectangle.
         /// </summary>
         /// <param name="xmin"></param>
         /// <param name="ymin"></param>
@@ -105,10 +107,10 @@ namespace TileEngine
         {
             Rectangle box = this.InWorldSquareBoundingBox;
 
-            if (box.Right < xmin || xmax < box.Left)
+            if (box.Right <= xmin || xmax < box.Left)
                 return false;
 
-            if (box.Bottom < ymin || ymax < box.Top)
+            if (box.Bottom <= ymin || ymax < box.Top)
                 return false;
 
             return true;
@@ -118,7 +120,7 @@ namespace TileEngine
         /// Constructs a rectangle of all the squares which this object
         /// touches.  Note that just because two objects touch the same
         /// square does not necessarily mean they touch each other!
-        /// This is a very coarse bounding box.
+        /// This can be a fairly coarse box.
         /// </summary>
         public virtual Rectangle InWorldSquareBoundingBox
         {
@@ -130,11 +132,11 @@ namespace TileEngine
                 output.X = FindXSquare(pixelBox.X, pixelBox.Y);
                 output.Y = FindYSquare(pixelBox.X, pixelBox.Y);
 
-                int otherCornerX = FindXSquare(pixelBox.Right, pixelBox.Bottom);
-                int otherCornerY = FindYSquare(pixelBox.Right, pixelBox.Bottom);
+                int otherCornerX = FindXSquare(pixelBox.Right - 1, pixelBox.Bottom - 1);
+                int otherCornerY = FindYSquare(pixelBox.Right - 1, pixelBox.Bottom - 1);
 
-                output.Width = otherCornerX - output.X;
-                output.Height = otherCornerY - output.Y;
+                output.Width = otherCornerX - output.X + 1;
+                output.Height = otherCornerY - output.Y + 1;
 
                 return output;
             }
