@@ -59,7 +59,7 @@ namespace TileEngine
             if (cell != null)
                 return cell;
 
-            cellCache.SmoothGuarantee(x, y);
+            cellCache.Guarantee(x, y);
             return cellCache.Get(x, y);
         }
 

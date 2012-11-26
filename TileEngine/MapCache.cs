@@ -27,7 +27,22 @@ namespace TileEngine
         /// of readability.
         /// </summary>
         private int xMin, yMin;
+        private int xMax
+        {
+            get { return xMin + cacheWidth - 1; }
+            set { xMin = value - cacheWidth + 1; }
+        }
+        private int yMax
+        {
+            get { return yMin + cacheHeight - 1; }
+            set { yMin = value - cacheHeight + 1; }
+        }
         
+        /// <summary>
+        /// These are the magic that make this a toroidal array!
+        /// xStartIndex represents the point in the index where
+        /// x=xMin, and yStartIndex is where y=yMin
+        /// </summary>
         private int xStartIndex, yStartIndex;
 
         /// <summary>
@@ -43,11 +58,21 @@ namespace TileEngine
 
             cache = new MapCell[cacheWidth, cacheHeight];
 
-            this.xStartIndex = 0;
-            this.yStartIndex = 0;
-
             this.xMin = startX;
             this.yMin = startY;
+
+            rebuildCache();
+        }
+
+        /// <summary>
+        /// This builds the entire cache from scratch, maintaining
+        /// the xMin and yMin values.
+        /// </summary>
+        /// <param name="map"></param>
+        private void rebuildCache()
+        {
+            this.xStartIndex = 0;
+            this.yStartIndex = 0;
 
             for (int x = 0; x < cacheWidth; x++)
             {
@@ -58,6 +83,12 @@ namespace TileEngine
             }
         }
 
+        /// <summary>
+        /// Whether or not the specified point is in the cache.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         public bool Contains(int x, int y)
         {
             return (xMin <= x && x < xMin + cacheWidth && yMin <= y && y < yMin + cacheHeight);
@@ -92,7 +123,7 @@ namespace TileEngine
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        public void SmoothGuarantee(int x, int y)
+        private void smoothGuarantee(int x, int y)
         {
             while (y < yMin)
                 addTopRow();
@@ -105,6 +136,47 @@ namespace TileEngine
 
             while (x >= xMin + cacheWidth)
                 addRightColumn();
+        }
+
+        /// <summary>
+        /// Determines whether it would be faster to do a
+        /// SmoothGuarantee or just completely rebuild
+        /// the cache, then does the better of the two.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        public void Guarantee(int x, int y)
+        {
+            int smoothCost = 0;
+            if (x < xMin)
+                smoothCost += cacheHeight * (xMin - x);
+            if (x > xMax)
+                smoothCost += cacheHeight * (x - xMax);
+            if (y < yMin)
+                smoothCost += cacheWidth * (yMin - y);
+            if (y > yMax)
+                smoothCost += cacheWidth * (y - yMax);
+
+            int rebuildCost = cacheWidth * cacheHeight;
+
+            if (smoothCost < rebuildCost)
+            {
+                smoothGuarantee(x, y);
+            }
+            else
+            {
+                if (x < xMin)
+                    xMin = x;
+                else if (x > xMax)
+                    xMax = x;
+
+                if (y < yMin)
+                    yMin = y;
+                else if (y > yMax)
+                    yMax = y;
+
+                rebuildCache();
+            }
         }
 
         private void addTopRow()
