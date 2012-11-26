@@ -11,6 +11,14 @@ namespace TileEngine
     public abstract class InGameObject
     {
         /// <summary>
+        /// Default constructor for InGameObject
+        /// </summary>
+        public InGameObject()
+        {
+            this.Tint = Color.White;
+        }
+
+        /// <summary>
         /// General update method; should be called once per timestep.
         /// </summary>
         public abstract void Update(GameTime time);
@@ -21,9 +29,15 @@ namespace TileEngine
         public abstract Texture2D Texture { get; }
 
         /// <summary>
-        /// The soruce rectangle we should be drawing from
+        /// The source rectangle we should be drawing from
         /// </summary>
         public abstract Rectangle SourceRectangle { get; }
+
+        /// <summary>
+        /// The tint we should be drawing the InGameObject in.
+        /// Defaults to White (no tint).
+        /// </summary>
+        public virtual Color Tint { get; protected set; }
 
         /// <summary>
         /// Constructs a rectangle bounding the object in the world.

@@ -9,8 +9,8 @@ namespace TileEngine
 {
     public class FPSComponent : DrawableGameComponent
     {
-        private int drawsSinceReset, updatesSinceReset;
-        string drawnFPS, logicFPS;
+        private int drawsSinceReset;
+        string drawnFPS;
 
         private TimeSpan timeSpan;
         private TimeSpan interval;
@@ -18,7 +18,7 @@ namespace TileEngine
         public SpriteFont Font { get; set; }
         private SpriteBatch batch;
 
-        private Vector2 position1, position2, position3, position4;
+        private Vector2 position1, position2;
 
         private Color defaultColor = Color.White;
 
@@ -46,19 +46,15 @@ namespace TileEngine
 
             drawsSinceReset = 0;
             drawnFPS = "D FPS: 0";
-            logicFPS = "L FPS: 0";
 
             position1 = new Vector2(30, 30);
             position2 = new Vector2(30, 31);
-            position3 = new Vector2(30, 50);
-            position4 = new Vector2(30, 51);
 
             Visible = true;
         }
 
         public override void Update(GameTime gameTime)
         {
-            updatesSinceReset++;
         }
 
         public override void Draw(GameTime gameTime)
@@ -69,18 +65,14 @@ namespace TileEngine
             if (timeSpan > interval)
             {
                 drawnFPS = "Draws FPS: " + ((2 * drawsSinceReset).ToString());
-                logicFPS = "Logic FPS: " + ((2 * updatesSinceReset).ToString());
                 timeSpan -= interval;
 
                 drawsSinceReset = 0;
-                updatesSinceReset = 0;
             }
 
             batch.Begin();
             batch.DrawString(Font, drawnFPS, position2, Color.Black);
             batch.DrawString(Font, drawnFPS, position1, Color.White);
-            batch.DrawString(Font, logicFPS, position4, Color.Black);
-            batch.DrawString(Font, logicFPS, position3, Color.White);
             batch.End();
 
             base.Draw(gameTime);

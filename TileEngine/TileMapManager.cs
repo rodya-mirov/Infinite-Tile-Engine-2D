@@ -304,7 +304,7 @@ namespace TileEngine
                     obj.Texture,
                     destinationRectangle,
                     sourceRectangle,
-                    Color.White, //no tint
+                    obj.Tint,
                     0f, //no rotation
                     Vector2.Zero, //don't use origin
                     SpriteEffects.None,
