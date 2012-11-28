@@ -136,7 +136,7 @@ namespace TileEngine
             Camera.ViewHeight = height;
 
             squaresWideToDraw = 2 + (int)((width) / (Tile.TileStepX * 2));
-            squaresTallToDraw = 2 + (int)((height) / (Tile.TileStepY * 2));
+            squaresTallToDraw = 3 + (int)((height) / (Tile.TileStepY * 2));
         }
 
         public void SetViewDimensions(GraphicsDeviceManager graphics)
