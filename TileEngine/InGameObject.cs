@@ -15,8 +15,21 @@ namespace TileEngine
         /// </summary>
         public InGameObject()
         {
-            this.Tint = Color.White;
         }
+
+        /// <summary>
+        /// The distance (in pixels) from the left side
+        /// of the (sourcerectangle of the) texture to
+        /// the intended x-center of the object.
+        /// </summary>
+        public abstract int VisualOffsetX { get; }
+
+        /// <summary>
+        /// The distance (in pixels) from the top side
+        /// of the (source rectangle of the) texture
+        /// to the intended y-center of the object.
+        /// </summary>
+        public abstract int VisualOffsetY { get; }
 
         /// <summary>
         /// General update method; should be called once per timestep.
@@ -37,7 +50,10 @@ namespace TileEngine
         /// The tint we should be drawing the InGameObject in.
         /// Defaults to White (no tint).
         /// </summary>
-        public virtual Color Tint { get; protected set; }
+        public virtual Color Tint
+        {
+            get { return Color.White; }
+        }
 
         /// <summary>
         /// Constructs a rectangle bounding the object in the world.
@@ -146,12 +162,15 @@ namespace TileEngine
         /// Finds the square coordinate of this object.
         /// </summary>
         /// <returns></returns>
-        public Point SquareCoordinate()
+        public Point SquareCoordinate
         {
-            return new Point(
-                FindXSquare(xPositionWorld, yPositionWorld),
-                FindYSquare(xPositionWorld, yPositionWorld)
-                );
+            get
+            {
+                return new Point(
+                   FindXSquare(xPositionWorld, yPositionWorld),
+                   FindYSquare(xPositionWorld, yPositionWorld)
+                   );
+            }
         }
 
         /// <summary>
@@ -162,7 +181,7 @@ namespace TileEngine
         /// <returns></returns>
         protected int FindXSquare(int xPos, int yPos)
         {
-            return Numerical.intDivide(xPos + Tile.TileInGameWidthHalf, Tile.TileInGameWidth);
+            return Numerical.intDivide(xPos, Tile.TileInGameWidth);
         }
 
         /// <summary>
@@ -173,29 +192,31 @@ namespace TileEngine
         /// <returns></returns>
         protected int FindYSquare(int xPos, int yPos)
         {
-            return Numerical.intDivide(yPos + Tile.TileInGameHeightHalf, Tile.TileInGameHeight);
+            return Numerical.intDivide(yPos, Tile.TileInGameHeight);
         }
 
         /// <summary>
-        /// Calculates the X-Ingame-pixel coordinate from a given square point
+        /// Calculates the X-Ingame-pixel coordinate from a given square point,
+        /// so that it ends up right in the middle.
         /// </summary>
         /// <param name="xSquare"></param>
         /// <param name="ySquare"></param>
         /// <returns></returns>
         protected int FindXCoordinate(int xSquare, int ySquare)
         {
-            return xSquare * Tile.TileInGameWidth;
+            return xSquare * Tile.TileInGameWidth + Tile.TileInGameWidthHalf;
         }
 
         /// <summary>
-        /// Calculates the Y-Ingame-pixel coordinate from a given square point
+        /// Calculates the Y-Ingame-pixel coordinate from a given square point,
+        /// so that it ends up right in the middle.
         /// </summary>
         /// <param name="xSquare"></param>
         /// <param name="ySquare"></param>
         /// <returns></returns>
         protected int FindYCoordinate(int xSquare, int ySquare)
         {
-            return ySquare * Tile.TileInGameHeight;
+            return ySquare * Tile.TileInGameHeight + Tile.TileInGameHeightHalf;
         }
 
         /// <summary>
@@ -215,7 +236,7 @@ namespace TileEngine
         /// <summary>
         /// Calculates the un-translated xposition to draw this sprite at
         /// </summary>
-        public virtual int xPositionDraw
+        public int xPositionDraw
         {
             get
             {
@@ -227,7 +248,7 @@ namespace TileEngine
         /// <summary>
         /// Calculates the un-translated yposition to draw this sprite at
         /// </summary>
-        public virtual int yPositionDraw
+        public int yPositionDraw
         {
             get
             {
@@ -250,9 +271,8 @@ namespace TileEngine
 
             Rectangle output = new Rectangle();
 
-            output.X = xPositionDraw - offsetX - (firstX + firstY) * Tile.TileStepX;
-
-            output.Y = yPositionDraw - offsetY - (firstX - firstY) * Tile.TileStepY;
+            output.X = xPositionDraw - offsetX - (firstX + firstY) * Tile.TileStepX - VisualOffsetX;
+            output.Y = yPositionDraw - offsetY - (firstX - firstY) * Tile.TileStepY - VisualOffsetY;
 
             output.Height = source.Width;
             output.Width = source.Height;

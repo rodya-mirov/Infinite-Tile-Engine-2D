@@ -9,7 +9,8 @@ using TileEngine.Utilies;
 
 namespace TileEngine
 {
-    public abstract class TileMapManager<InGameObjectType> where InGameObjectType:InGameObject
+    public abstract class TileMapManager<InGameObjectType>
+        where InGameObjectType : InGameObject
     {
         SpriteBatch spriteBatch;
 
@@ -92,13 +93,6 @@ namespace TileEngine
         #endregion
 
         #region Drawing Information
-        /// <summary>
-        /// Rigged up to make (0, 0) in pixel coordinates default
-        /// to the center of square (0, 0)
-        /// </summary>
-        int baseOffsetX;
-        int baseOffsetY;
-
         int squaresWideToDraw;
         int squaresTallToDraw;
 
@@ -114,9 +108,6 @@ namespace TileEngine
         {
             this.ContentLocation = contentLocation;
             this.game = game;
-
-            baseOffsetX = -Tile.TileStepX;
-            baseOffsetY = -Tile.TileHeight + Tile.TileStepY;
         }
 
         public virtual void Initialize()
@@ -136,7 +127,7 @@ namespace TileEngine
 
             Tile.TileSetTexture = game.Content.Load<Texture2D>(ContentLocation);
 
-            Camera.DisplayOffset = new Point(baseOffsetX, baseOffsetY);
+            Camera.DisplayOffset = new Point(0, 0);
         }
 
         public void SetViewDimensions(int width, int height)
@@ -144,8 +135,8 @@ namespace TileEngine
             Camera.ViewWidth = width;
             Camera.ViewHeight = height;
 
-            squaresWideToDraw = 2 + (int)((Math.Abs(baseOffsetX) + width) / (Tile.TileStepX * 2));
-            squaresTallToDraw = (int)((Math.Abs(baseOffsetY) + height) / (Tile.TileStepY * 2));
+            squaresWideToDraw = 2 + (int)((width) / (Tile.TileStepX * 2));
+            squaresTallToDraw = 2 + (int)((height) / (Tile.TileStepY * 2));
         }
 
         public void SetViewDimensions(GraphicsDeviceManager graphics)
@@ -169,15 +160,41 @@ namespace TileEngine
         }
 
         /// <summary>
-        /// MouseSquare is the most recently moused-over (in-game) square coordinate.
-        /// This is updated automatically during the Update loop.
+        /// MouseWorldX is the x-coordinate of MouseWorldPosition.
         /// </summary>
-        public int MouseSquareX { get; set; }
+        public int MouseWorldX { get; set; }
+        /// <summary>
+        /// MouseWorldY is the y-coordinate of MouseWorldPosition.
+        /// </summary>
+        public int MouseWorldY { get; set; }
+        /// <summary>
+        /// MouseWorldPosition is the most recently moused-over
+        /// in-world (pixel) coordinate.  This is updated automatically
+        /// during the update loop.
+        /// </summary>
+        public Point MouseWorldPosition
+        {
+            get { return new Point(MouseWorldX, MouseWorldY); }
+        }
+
         /// <summary>
         /// MouseSquare is the most recently moused-over (in-game) square coordinate.
         /// This is updated automatically during the Update loop.
         /// </summary>
-        public int MouseSquareY { get; set; }
+        public int MouseSquareX
+        {
+            get { return Numerical.intDivide(MouseWorldX, Tile.TileInGameWidth); }
+        }
+
+        /// <summary>
+        /// MouseSquare is the most recently moused-over (in-game) square coordinate.
+        /// This is updated automatically during the Update loop.
+        /// </summary>
+        public int MouseSquareY
+        {
+            get { return Numerical.intDivide(MouseWorldY, Tile.TileInGameHeight); }
+        }
+
         /// <summary>
         /// MouseSquare is the most recently moused-over (in-game) square coordinate.
         /// This is updated automatically during the Update loop.
@@ -195,70 +212,27 @@ namespace TileEngine
             updateMousePosition(ms.X, ms.Y);
         }
 
+        /// <summary>
+        /// Matrix transforms!  Turning mouse screen coordinates into
+        /// in-game pixel coordinates, then scaling down to square coordinates.
+        /// </summary>
+        /// <param name="mouseX"></param>
+        /// <param name="mouseY"></param>
         private void updateMousePosition(int mouseX, int mouseY)
         {
-            //Premature optimization is the mother of weird errors
-            /*
-            if (this.mouseScreenX == mouseX && this.mouseScreenY == mouseY)
-                return;
-             */
-
             this.mouseScreenX = mouseX;
             this.mouseScreenY = mouseY;
 
-            int properOffsetX = -Camera.Location.X;
-            int properOffsetY = -Camera.Location.Y;
+            int translatedMouseX = mouseX + Camera.Location.X;
+            int translatedMouseY = mouseY + Camera.Location.Y;
 
-            int gameRawMouseX = mouseX - properOffsetX;
-            int gameRawMouseY = mouseY - properOffsetY;
+            int wxTsx = Numerical.intDivide(Tile.TileInGameWidth * translatedMouseX, Tile.TileStepX);
+            int wyTsy = Numerical.intDivide(Tile.TileInGameWidth * translatedMouseY, Tile.TileStepY);
+            int hxTsx = Numerical.intDivide(Tile.TileInGameHeight * translatedMouseX, Tile.TileStepX);
+            int hyTsy = Numerical.intDivide(Tile.TileInGameHeight * translatedMouseY, Tile.TileStepY);
 
-            int gridPosX = Numerical.intDivide(gameRawMouseX, Tile.TileStepX);
-            int gridPosY = Numerical.intDivide(gameRawMouseY, Tile.TileStepY);
-
-            //now two cases: define the grid parity to be gridPosX+gridPosY % 2
-            //if it's even, our square is divided like this: /
-            //    then either we're a lower-right corner or an upper-left corner
-            //if it's odd, our square is divided like this: \
-            //    then either we're an upper-right corner or a lower-left corner
-            //we'll transform everything into an upper-left corner
-
-            int gridParity = Numerical.Mod(gridPosX + gridPosY, 2);
-
-            int inSquareX = gameRawMouseX - Tile.TileStepX * gridPosX;
-            int inSquareY = gameRawMouseY - Tile.TileStepY * gridPosY;
-
-            if (gridParity == 0)
-            {
-                //UL corner (below the / diagonal)
-                if ((inSquareY - Tile.TileStepY) * Tile.TileStepX >= -inSquareX * Tile.TileStepY)
-                {
-                    //do nothing
-                }
-                else //DR corner
-                {
-                    gridPosX -= 1;
-                    gridPosY -= 1;
-                }
-            }
-            else
-            {
-                //UR corner (below the \ diagonal)
-                if (inSquareY * Tile.TileStepX >= Tile.TileStepY * inSquareX)
-                {
-                    gridPosX -= 1;
-                }
-                else //DL corner
-                {
-                    gridPosY -= 1;
-                }
-            }
-
-            //the parity is 0, guaranteed by the above, so there's no issue of rounding errors
-            int relativeSquareX = Numerical.intDivide(gridPosX + gridPosY, 2) + 1;
-            int relativeSquareY = Numerical.intDivide(gridPosX - gridPosY, 2);
-
-            this.MouseSquareX = relativeSquareX;
-            this.MouseSquareY = relativeSquareY;
+            MouseWorldX = Numerical.intDivide(wxTsx + wyTsy, 2);
+            MouseWorldY = Numerical.intDivide(hxTsx - hyTsy, 2);
         }
 
         public virtual void Draw(GameTime gameTime)
@@ -276,11 +250,11 @@ namespace TileEngine
             if (Numerical.Mod(leftX + topY, 2) == 1)
                 leftX--;
 
-            int firstX = (leftX + topY) / 2;
+            int firstX = (leftX + topY) / 2 - 1;
             int firstY = (leftX - topY) / 2;
 
-            int offsetX = Camera.Location.X - (firstX + firstY) * Tile.TileStepX - baseOffsetX;
-            int offsetY = Camera.Location.Y - (firstX - firstY) * Tile.TileStepY - baseOffsetY;
+            int offsetX = Camera.Location.X - (firstX + firstY) * Tile.TileStepX;
+            int offsetY = Camera.Location.Y - (firstX - firstY) * Tile.TileStepY;
 
             drawTileMapCells(maxdepth, firstX, firstY, offsetX, offsetY);
             drawInGameObjects(maxdepth, firstX, firstY, offsetX, offsetY);
@@ -298,7 +272,8 @@ namespace TileEngine
 
                 Rectangle objBox = obj.InWorldSquareBoundingBox;
 
-                float depth = calculateDepthOffset(maxdepth, objBox.Right - firstX, objBox.Top - firstY) - heightRowDepthMod;
+                float depth = calculateDepthOffset(maxdepth, objBox.Right - firstX - 1, objBox.Top - firstY);
+                depth -= heightRowDepthMod; //since it's above the ground, level with the first level of walls
 
                 spriteBatch.Draw(
                     obj.Texture,
@@ -317,9 +292,17 @@ namespace TileEngine
             yield break;
         }
 
+        /// <summary>
+        /// This can be toggled to change whether cell coordinates are drawn.
+        /// </summary>
+        protected bool displayCellCoordinates = false;
+
         private void drawTileMapCells(float maxdepth, int firstX, int firstY, int offsetX, int offsetY)
         {
             int xDrawPosition, yDrawPosition;
+
+            offsetX += Tile.TileVisualOffsetX;
+            offsetY += Tile.TileVisualOffsetY;
 
             MapCell cellToDraw;
 
@@ -336,6 +319,9 @@ namespace TileEngine
                         xDrawPosition = (x + y) * Tile.TileStepX - offsetX;
                         yDrawPosition = (x - y) * Tile.TileStepY - offsetY;
 
+                        int xIndex = firstX + x;
+                        int yIndex = firstY + y;
+
                         //we really are moving around with those firstX and firstY values
                         cellToDraw = MyMap.GetMapCell(firstX + x, firstY + y);
 
@@ -344,6 +330,19 @@ namespace TileEngine
                             yDrawPosition,
                             calculateDepthOffset(maxdepth, x, y),
                             heightRowDepthMod);
+
+                        if (displayCellCoordinates && (Font != null))
+                        {
+                            String s = "(" + (firstX + x) + "," + (firstY + y) + ")";
+                            Vector2 measurement = Font.MeasureString(s);
+
+                            Vector2 drawPosition = new Vector2(
+                                xDrawPosition + Tile.TileWidth / 2 - measurement.X / 2 + Tile.TileVisualOffsetX,
+                                yDrawPosition - measurement.Y / 2 + Tile.TileVisualOffsetY
+                                );
+
+                            spriteBatch.DrawString(Font, s, drawPosition, Color.White);
+                        }
 
                         x++;
                     }
@@ -376,7 +375,7 @@ namespace TileEngine
         /// <returns></returns>
         public abstract IEnumerable<Point> GetAdjacentPoints(int X, int Y);
 
-        
+
         /// <summary>
         /// Determines whether one can move directly from the start square to the end square.
         /// </summary>

@@ -21,8 +21,9 @@ namespace TileEngineDemo
             base.Initialize();
 
             objects = new List<InGameObject>();
+
+            objects.Add(new NPCexample(144, 176, MyMap));
             objects.Add(new NPCexample(0, 0, MyMap));
-            objects.Add(new NPCexample(100, 100, MyMap));
         }
 
         public override void LoadContent()
@@ -65,6 +66,12 @@ namespace TileEngineDemo
             yield return new Point(X + 1, Y);
             yield return new Point(X, Y - 1);
             yield return new Point(X, Y + 1);
+        }
+
+        public void Pause(bool p)
+        {
+            foreach (NPCexample npc in this.objects)
+                npc.paralyzed = p;
         }
     }
 }

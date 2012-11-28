@@ -9,40 +9,40 @@ namespace TileEngineDemo
 {
     public class TileMapComponent<InGameObjectType> : DrawableGameComponent where InGameObjectType : InGameObject
     {
-        private TileMapManager<InGameObjectType> map { get; set; }
+        private TileMapManager<InGameObjectType> mapManager { get; set; }
 
         public TileMapComponent(Game1 game, TileMapManager<InGameObjectType> map)
             : base(game)
         {
-            this.map = map;
+            this.mapManager = map;
         }
 
         protected override void LoadContent()
         {
             base.LoadContent();
 
-            map.LoadContent();
+            mapManager.LoadContent();
         }
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
-            map.Update(gameTime);
+            mapManager.Update(gameTime);
         }
 
         public override void Initialize()
         {
             base.Initialize();
 
-            map.Initialize();
+            mapManager.Initialize();
         }
 
         public override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
 
-            map.Draw(gameTime);
+            mapManager.Draw(gameTime);
         }
     }
 }

@@ -16,7 +16,22 @@ namespace TileEngine
     /// </summary>
     public static class Tile
     {
+        /// <summary>
+        /// The texture for the tileset.
+        /// </summary>
         static public Texture2D TileSetTexture;
+
+        /// <summary>
+        /// The distance from the left to the intended
+        /// "upper-left corner" of the tile.
+        /// </summary>
+        static public int TileVisualOffsetX;
+
+        /// <summary>
+        /// The distance from the top to the intended
+        /// "upper-left corner" of the tile.
+        /// </summary>
+        static public int TileVisualOffsetY;
 
         /// <summary>
         /// The width in pixels of each tile (graphic!)

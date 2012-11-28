@@ -24,6 +24,16 @@ namespace TileEngineDemo
         protected static Texture2D NPCtexture;
         protected static Rectangle[] sources;
 
+        public override int VisualOffsetX
+        {
+            get { return 32; }
+        }
+
+        public override int VisualOffsetY
+        {
+            get { return 48; }
+        }
+
         public static void LoadContent(Game game)
         {
             if (NPCtexture == null)
@@ -61,8 +71,13 @@ namespace TileEngineDemo
         private int xVel = 0;
         private int yVel = 0;
 
+        public bool paralyzed = false;
+
         public override void Update(GameTime gameTime)
         {
+            if (paralyzed)
+                return;
+
             ticksSinceTurn++;
 
             Rectangle bounds = this.InWorldSquareBoundingBox;
@@ -113,9 +128,9 @@ namespace TileEngineDemo
             yPos += yVel;
 
             bounds = this.InWorldSquareBoundingBox;
-            for (int x = bounds.Left; x <= bounds.Right; x++)
+            for (int x = bounds.Left; x < bounds.Right; x++)
             {
-                for (int y = bounds.Top; y <= bounds.Bottom; y++)
+                for (int y = bounds.Top; y < bounds.Bottom; y++)
                 {
                     map.SetOverride(HighlightCell, x, y);
                 }

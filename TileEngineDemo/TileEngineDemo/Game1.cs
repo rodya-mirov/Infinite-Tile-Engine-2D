@@ -39,6 +39,9 @@ namespace TileEngineDemo
         /// </summary>
         protected override void Initialize()
         {
+            Tile.TileVisualOffsetX = 0;
+            Tile.TileVisualOffsetY = 48;
+
             mapVisualizer = new TileMapManagerExtension(this, @"Textures\TileSets\TileSheet");
             mapComponent = new TileMapComponent<InGameObject>(this, mapVisualizer);
             Components.Add(mapComponent);
@@ -79,6 +82,7 @@ namespace TileEngineDemo
             MapCell[,] houseBlock = constructHouse();
             mapVisualizer.MyMap.AddConstructedBlock(houseBlock, 5, 5);
             mapVisualizer.MyMap.AddConstructedBlock(houseBlock, 5, 7);
+            mapVisualizer.MyMap.AddConstructedBlock(houseBlock, 8, 7);
             mapVisualizer.MyMap.AddConstructedBlock(houseBlock, 5, 10);
             mapVisualizer.MyMap.AddConstructedBlock(houseBlock, 5, 12);
         }
@@ -164,6 +168,11 @@ namespace TileEngineDemo
                 this.Exit();
 
             processMovement(ks);
+
+            if (ks.IsKeyDown(Keys.Space))
+                mapVisualizer.Pause(true);
+            else
+                mapVisualizer.Pause(false);
 
             base.Update(gameTime);
         }
