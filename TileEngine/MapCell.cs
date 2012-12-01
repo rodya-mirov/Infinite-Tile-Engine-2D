@@ -13,7 +13,17 @@ namespace TileEngine
         public int X { get; protected set; }
         public int Y { get; protected set; }
 
-        protected SortedDictionary<int, Queue<int>> Tiles { get; set; }
+        protected SortedDictionary<int, Queue<int>> Tiles;
+        public SortedDictionary<int, Queue<int>> TilesCopy()
+        {
+            SortedDictionary<int, Queue<int>> tilesCopy = new SortedDictionary<int, Queue<int>>();
+            foreach(int level in Tiles.Keys)
+            {
+                tilesCopy[level] = new Queue<int>(Tiles[level]);
+            }
+
+            return tilesCopy;
+        }
 
         /// <summary>
         /// Constructs a new MapCell with the specified base tile at the specified coordinates.
