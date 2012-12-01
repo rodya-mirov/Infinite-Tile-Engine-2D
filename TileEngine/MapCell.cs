@@ -10,10 +10,10 @@ namespace TileEngine
 {
     public class MapCell
     {
-        public int X { get; private set; }
-        public int Y { get; private set; }
+        public int X { get; protected set; }
+        public int Y { get; protected set; }
 
-        private SortedDictionary<int, Queue<int>> Tiles { get; set; }
+        protected SortedDictionary<int, Queue<int>> Tiles { get; set; }
 
         /// <summary>
         /// Constructs a new MapCell with the specified base tile at the specified coordinates.
