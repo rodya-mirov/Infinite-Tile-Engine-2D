@@ -9,9 +9,9 @@ namespace TileEngineDemo
 {
     public class TileMapComponent<InGameObjectType> : DrawableGameComponent where InGameObjectType : InGameObject
     {
-        private TileMapManager<InGameObjectType> mapManager { get; set; }
+        private TileMapManagerExtension mapManager { get; set; }
 
-        public TileMapComponent(Game1 game, TileMapManager<InGameObjectType> map)
+        public TileMapComponent(Game1 game, TileMapManagerExtension map)
             : base(game)
         {
             this.mapManager = map;

@@ -5,37 +5,38 @@ using System.Text;
 
 namespace TileEngine
 {
-    public class TileMap
+    public abstract class TileMap<MapCellType>
+        where MapCellType : MapCell
     {
         public const int randomSeed = 121213;
-        private MapCache cellCache;
-        private MapSaved cellSaved;
-        private MapSaved cellTemporaryOverrides;
+        private MapCache<MapCellType> cellCache;
+        private MapSaved<MapCellType> cellSaved;
+        private MapSaved<MapCellType> cellTemporaryOverrides;
 
         public TileMap()
         {
-            cellCache = new MapCache(this);
-            cellSaved = new MapSaved(this);
-            cellTemporaryOverrides = new MapSaved(this);
+            cellCache = new MapCache<MapCellType>(this);
+            cellSaved = new MapSaved<MapCellType>(this);
+            cellTemporaryOverrides = new MapSaved<MapCellType>(this);
         }
 
         #region Constructed Cell Adding
-        public void AddConstructedCell(MapCell cell)
+        public void AddConstructedCell(MapCellType cell)
         {
             cellSaved.SaveExternalCell(cell);
         }
 
-        public void AddConstructedCell(MapCell cell, int newX, int newY)
+        public void AddConstructedCell(MapCellType cell, int newX, int newY)
         {
             cellSaved.SaveExternalCell(cell, newX, newY);
         }
 
-        public void AddConstructedBlock(MapCell[,] cells)
+        public void AddConstructedBlock(MapCellType[,] cells)
         {
             cellSaved.SaveExternalBlock(cells);
         }
 
-        public void AddConstructedBlock(MapCell[,] cells, int newX, int newY)
+        public void AddConstructedBlock(MapCellType[,] cells, int newX, int newY)
         {
             cellSaved.SaveExternalBlock(cells, newX, newY);
         }
@@ -47,9 +48,9 @@ namespace TileEngine
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public MapCell GetMapCell(int x, int y)
+        public MapCellType GetMapCell(int x, int y)
         {
-            MapCell cell;
+            MapCellType cell;
 
             cell = cellTemporaryOverrides.GetCell(x, y);
             if (cell != null)
@@ -71,10 +72,7 @@ namespace TileEngine
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public virtual MapCell MakeMapCell(int x, int y)
-        {
-            return new MapCell(0, x, y);
-        }
+        public abstract MapCellType MakeMapCell(int x, int y);
 
         /// <summary>
         /// This cancels all existing overrides
@@ -91,7 +89,7 @@ namespace TileEngine
         /// <param name="cell"></param>
         /// <param name="newX"></param>
         /// <param name="newY"></param>
-        public void SetOverride(MapCell cell, int newX, int newY)
+        public void SetOverride(MapCellType cell, int newX, int newY)
         {
             cellTemporaryOverrides.SaveExternalCell(cell, newX, newY);
         }

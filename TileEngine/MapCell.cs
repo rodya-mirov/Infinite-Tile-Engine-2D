@@ -22,39 +22,46 @@ namespace TileEngine
         /// <param name="x"></param>
         /// <param name="y"></param>
         public MapCell(int baseTile, int x, int y)
+            : this(x, y)
         {
-            this.X = x;
-            this.Y = y;
-
-            Tiles = new SortedDictionary<int, Queue<int>>();
             Tiles[0] = new Queue<int>();
 
             Tiles[0].Enqueue(baseTile);
         }
 
         /// <summary>
-        /// Constructs a new MapCell at the specified coordinates which is otherwise
-        /// identical to the specified cell
+        /// Like the public constructor, but doesn't set up a base tile.
+        /// Not to be used lightly :P
         /// </summary>
-        /// <param name="toCopy"></param>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        public MapCell(MapCell toCopy, int x, int y)
+        protected MapCell(int x, int y)
         {
             this.X = x;
             this.Y = y;
 
             Tiles = new SortedDictionary<int, Queue<int>>();
+        }
 
-            foreach (int key in toCopy.Tiles.Keys)
+        /// <summary>
+        /// Copies this cell into a new location!
+        /// </summary>
+        /// <param name="newX"></param>
+        /// <param name="newY"></param>
+        /// <returns></returns>
+        public virtual MapCell Copy(int newX, int newY)
+        {
+            MapCell output = new MapCell(newX, newY);
+
+            foreach (int key in this.Tiles.Keys)
             {
                 Queue<int> tileLevel = new Queue<int>();
 
-                foreach (int tile in toCopy.Tiles[key])
+                foreach (int tile in this.Tiles[key])
                     tileLevel.Enqueue(tile);
 
-                Tiles[key] = tileLevel;
+                output.Tiles[key] = tileLevel;
             }
+
+            return output;
         }
 
         /// <summary>

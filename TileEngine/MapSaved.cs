@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using TileEngine.Utilities;
 
 namespace TileEngine
 {
@@ -15,16 +16,17 @@ namespace TileEngine
     /// no good way to sort the blocks, and no obvious way to defragment block
     /// storage.
     /// </summary>
-    public class MapSaved
+    public class MapSaved<MapCellType>
+        where MapCellType : MapCell
     {
-        private SortedList<SortedPoint, MapCell> savedCells;
-        private TileMap map;
+        private SortedList<SortedPoint, MapCellType> savedCells;
+        private TileMap<MapCellType> map;
 
-        public MapSaved(TileMap map)
+        public MapSaved(TileMap<MapCellType> map)
         {
             this.map = map;
 
-            savedCells = new SortedList<SortedPoint, MapCell>();
+            savedCells = new SortedList<SortedPoint, MapCellType>();
         }
 
         /// <summary>
@@ -34,7 +36,7 @@ namespace TileEngine
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public MapCell GetCell(int x, int y)
+        public MapCellType GetCell(int x, int y)
         {
             SortedPoint p = new SortedPoint(x, y);
 
@@ -53,7 +55,7 @@ namespace TileEngine
         /// <param name="height"></param>
         public void SaveExistingBlock(int xmin, int ymin, int width, int height)
         {
-            MapCell cell;
+            MapCellType cell;
 
             for (int x = 0; x < width; x++)
             {
@@ -70,7 +72,7 @@ namespace TileEngine
         /// Saves an externally constructed cell.
         /// </summary>
         /// <param name="cell"></param>
-        public void SaveExternalCell(MapCell cell)
+        public void SaveExternalCell(MapCellType cell)
         {
             SortedPoint sp = new SortedPoint(cell);
             savedCells[sp] = cell;
@@ -82,9 +84,9 @@ namespace TileEngine
         /// <param name="cell"></param>
         /// <param name="newX"></param>
         /// <param name="newY"></param>
-        public void SaveExternalCell(MapCell cell, int newX, int newY)
+        public void SaveExternalCell(MapCellType cell, int newX, int newY)
         {
-            MapCell newCell = new MapCell(cell, newX, newY);
+            MapCellType newCell = (MapCellType)cell.Copy(newX, newY);
 
             SortedPoint sp = new SortedPoint(newCell);
             savedCells[sp] = newCell;
@@ -96,7 +98,7 @@ namespace TileEngine
         /// <param name="block"></param>
         public void SaveExternalBlock(MapCell[,] block)
         {
-            foreach (MapCell cell in block)
+            foreach (MapCellType cell in block)
             {
                 SortedPoint sp = new SortedPoint(cell);
                 savedCells[sp] = cell;
@@ -110,18 +112,18 @@ namespace TileEngine
         /// <param name="block"></param>
         /// <param name="xmin"></param>
         /// <param name="ymin"></param>
-        public void SaveExternalBlock(MapCell[,] block, int xmin, int ymin)
+        public void SaveExternalBlock(MapCellType[,] block, int xmin, int ymin)
         {
             int width = block.GetLength(0);
             int height = block.GetLength(1);
 
-            MapCell cell;
+            MapCellType cell;
 
             for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
                 {
-                    cell = new MapCell(block[x, y], xmin + x, ymin + y);
+                    cell = (MapCellType)block[x, y].Copy(xmin + x, ymin + y);
 
                     SortedPoint sp = new SortedPoint(cell);
                     savedCells[sp] = cell;

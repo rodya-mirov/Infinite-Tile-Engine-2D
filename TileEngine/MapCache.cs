@@ -6,7 +6,8 @@ using TileEngine.Utilies;
 
 namespace TileEngine
 {
-    public class MapCache
+    public class MapCache<MapCellType>
+        where MapCellType : MapCell
     {
         /// <summary>
         /// These should be set large enough so that the map can comfortably be drawn
@@ -17,8 +18,8 @@ namespace TileEngine
         public const int cacheWidth = 256;
         public const int cacheHeight = 256;
 
-        private MapCell[,] cache;
-        private TileMap map;
+        private MapCellType[,] cache;
+        private TileMap<MapCellType> map;
 
         /// <summary>
         /// The bounds for what is contained.  Note that, unlike array
@@ -52,11 +53,11 @@ namespace TileEngine
         /// <param name="map"></param>
         /// <param name="startX"></param>
         /// <param name="startY"></param>
-        public MapCache(TileMap map, int startX = 0, int startY = 0)
+        public MapCache(TileMap<MapCellType> map, int startX = 0, int startY = 0)
         {
             this.map = map;
 
-            cache = new MapCell[cacheWidth, cacheHeight];
+            cache = new MapCellType[cacheWidth, cacheHeight];
 
             this.xMin = startX;
             this.yMin = startY;
@@ -103,7 +104,7 @@ namespace TileEngine
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public MapCell Get(int x, int y)
+        public MapCellType Get(int x, int y)
         {
             return cache[
                 Numerical.Mod(x - xMin + xStartIndex, cacheWidth),

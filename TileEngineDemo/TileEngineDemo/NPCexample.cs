@@ -10,10 +10,10 @@ namespace TileEngineDemo
 {
     public class NPCexample : InGameObject
     {
-        private TileMap map { get; set; }
+        private TileMapExtension map { get; set; }
         private static MapCell HighlightCell { get; set; }
 
-        public NPCexample(int x, int y, TileMap map)
+        public NPCexample(int x, int y, TileMapExtension map)
         {
             xPos = x;
             yPos = y;

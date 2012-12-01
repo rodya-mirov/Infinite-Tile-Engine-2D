@@ -112,6 +112,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="TileMapComponent.cs" />
+    <Compile Include="TileMapExtension.cs" />
     <Compile Include="TileMapManagerExtension.cs" />
   </ItemGroup>
   <ItemGroup>

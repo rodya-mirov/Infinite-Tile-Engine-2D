@@ -9,14 +9,16 @@ using TileEngine.Utilies;
 
 namespace TileEngine
 {
-    public abstract class TileMapManager<InGameObjectType>
+    public abstract class TileMapManager<InGameObjectType, MapCellType, MapType>
         where InGameObjectType : InGameObject
+        where MapCellType : MapCell
+        where MapType : TileMap<MapCellType>, new()
     {
         SpriteBatch spriteBatch;
 
         public SpriteFont Font { get; set; }
 
-        public TileMap MyMap { get; protected set; }
+        public MapType MyMap { get; protected set; }
 
         public String ContentLocation { get; protected set; }
 
@@ -115,9 +117,9 @@ namespace TileEngine
             MyMap = makeMap();
         }
 
-        protected virtual TileMap makeMap()
+        protected virtual MapType makeMap()
         {
-            return new TileMap();
+            return new MapType();
         }
 
         public virtual void LoadContent()
@@ -304,7 +306,7 @@ namespace TileEngine
             offsetX += Tile.TileVisualOffsetX;
             offsetY += Tile.TileVisualOffsetY;
 
-            MapCell cellToDraw;
+            MapCellType cellToDraw;
 
             for (int xPlusYHalf = 0; xPlusYHalf < squaresWideToDraw; xPlusYHalf++)
             {
