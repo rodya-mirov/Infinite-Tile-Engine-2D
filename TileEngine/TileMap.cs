@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using TileEngine.Utilities;
 
 namespace TileEngine
 {
     public abstract class TileMap<MapCellType>
-        where MapCellType : MapCell
+        where MapCellType : MapCell, Translatable<MapCellType>
     {
         public const int randomSeed = 121213;
         private MapCache<MapCellType> cellCache;

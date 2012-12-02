@@ -6,12 +6,13 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using TileEngine.Utilies;
+using TileEngine.Utilities;
 
 namespace TileEngine
 {
     public abstract class TileMapManager<InGameObjectType, MapCellType, MapType>
         where InGameObjectType : InGameObject
-        where MapCellType : MapCell
+        where MapCellType : MapCell, Translatable<MapCellType>
         where MapType : TileMap<MapCellType>, new()
     {
         SpriteBatch spriteBatch;

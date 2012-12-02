@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using TileEngine.Utilies;
+using TileEngine.Utilities;
 
 namespace TileEngine
 {
     public class MapCache<MapCellType>
-        where MapCellType : MapCell
+        where MapCellType : MapCell, Translatable<MapCellType>
     {
         /// <summary>
         /// These should be set large enough so that the map can comfortably be drawn

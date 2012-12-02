@@ -17,7 +17,7 @@ namespace TileEngine
     /// storage.
     /// </summary>
     public class MapSaved<MapCellType>
-        where MapCellType : MapCell
+        where MapCellType : MapCell, Translatable<MapCellType>
     {
         private SortedList<SortedPoint, MapCellType> savedCells;
         private TileMap<MapCellType> map;
@@ -86,7 +86,8 @@ namespace TileEngine
         /// <param name="newY"></param>
         public void SaveExternalCell(MapCellType cell, int newX, int newY)
         {
-            MapCellType newCell = (MapCellType)cell.Copy(newX, newY);
+            Translatable<MapCellType> translatableCell = cell;
+            MapCellType newCell = translatableCell.CopyAt(newX, newY);
 
             SortedPoint sp = new SortedPoint(newCell);
             savedCells[sp] = newCell;
@@ -123,7 +124,8 @@ namespace TileEngine
             {
                 for (int y = 0; y < height; y++)
                 {
-                    cell = (MapCellType)block[x, y].Copy(xmin + x, ymin + y);
+                    Translatable<MapCellType> copyable = block[x, y];
+                    cell = copyable.CopyAt(xmin + x, ymin + y);
 
                     SortedPoint sp = new SortedPoint(cell);
                     savedCells[sp] = cell;

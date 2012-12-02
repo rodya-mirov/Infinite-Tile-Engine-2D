@@ -40,7 +40,7 @@ namespace TileEngine.Utilities.Pathfinding
         /// <returns>The shortest path from here to somewhere in there; returns null iff there is no path of cost less than maxCost.</returns>
         public static Path GetPath<T, S, M>(Point startPoint, HashSet<Point> goalPoints, int maxCost, TileMapManager<T, S, M> manager, GameTime startTime)
             where T : InGameObject
-            where S : MapCell
+            where S : MapCell, Translatable<S>
             where M : TileMap<S>, new()
         {
             return PathHunter.GetPath<T, S, M>(startPoint, goalPoints, maxCost, manager, startTime.TotalGameTime);
@@ -70,7 +70,7 @@ namespace TileEngine.Utilities.Pathfinding
         /// <returns>The shortest path from here to somewhere in there; returns null iff there is no path of cost less than maxCost.</returns>
         public static Path GetPath<T, S, M>(Point startPoint, HashSet<Point> goalPoints, int maxCost, TileMapManager<T, S, M> manager, TimeSpan startTime)
             where T : InGameObject
-            where S : MapCell
+            where S : MapCell, Translatable<S>
             where M : TileMap<S>, new()
         {
             //check for trivialities- we can't find a path to nowhere

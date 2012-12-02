@@ -5,10 +5,11 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using TileEngine.Utilities;
 
 namespace TileEngine
 {
-    public class MapCell
+    public class MapCell : Translatable<MapCell>
     {
         public int X { get; protected set; }
         public int Y { get; protected set; }
@@ -57,7 +58,7 @@ namespace TileEngine
         /// <param name="newX"></param>
         /// <param name="newY"></param>
         /// <returns></returns>
-        public virtual MapCell Copy(int newX, int newY)
+        public MapCell CopyAt(int newX, int newY)
         {
             MapCell output = new MapCell(newX, newY);
 
