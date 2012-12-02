@@ -85,7 +85,7 @@ namespace TileEngineDemo
             {
                 for (int y = bounds.Top; y <= bounds.Bottom; y++)
                 {
-                    map.ClearOverrideAtPosition(x, y);
+                    map.ClearVisualOverrideAtPosition(x, y);
                 }
             }
 
@@ -132,7 +132,7 @@ namespace TileEngineDemo
             {
                 for (int y = bounds.Top; y < bounds.Bottom; y++)
                 {
-                    map.SetOverride(HighlightCell, x, y);
+                    map.SetVisualOverride(HighlightCell, x, y);
                 }
             }
         }

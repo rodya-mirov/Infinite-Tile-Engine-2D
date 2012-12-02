@@ -12,13 +12,13 @@ namespace TileEngine
         public const int randomSeed = 121213;
         private MapCache<MapCellType> cellCache;
         private MapSaved<MapCellType> cellSaved;
-        private MapSaved<MapCellType> cellTemporaryOverrides;
+        private MapSaved<MapCellType> cellVisualOverrides;
 
         public TileMap()
         {
             cellCache = new MapCache<MapCellType>(this);
             cellSaved = new MapSaved<MapCellType>(this);
-            cellTemporaryOverrides = new MapSaved<MapCellType>(this);
+            cellVisualOverrides = new MapSaved<MapCellType>(this);
         }
 
         #region Constructed Cell Adding
@@ -45,17 +45,40 @@ namespace TileEngine
 
         /// <summary>
         /// Gets the MapCell located at the (true) coordinates X and Y.
+        /// This may return Visual Override cells, so if this is not desired,
+        /// please use GetRealMapCell instead.
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public MapCellType GetMapCell(int x, int y)
+        public MapCellType GetVisualMapCell(int x, int y)
         {
             MapCellType cell;
 
-            cell = cellTemporaryOverrides.GetCell(x, y);
+            cell = cellVisualOverrides.GetCell(x, y);
             if (cell != null)
                 return cell;
+
+            cell = cellSaved.GetCell(x, y);
+            if (cell != null)
+                return cell;
+
+            cellCache.Guarantee(x, y);
+            return cellCache.Get(x, y);
+        }
+
+        /// <summary>
+        /// This gets the (underlying) MapCell at the true coordinates
+        /// X and Y.  The difference between this and GetMapCell is that
+        /// this ignores the VisualOverride cells.  Used for passability,
+        /// etc. purposes, rather than drawing purposes.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public MapCellType GetRealMapCell(int x, int y)
+        {
+            MapCellType cell;
 
             cell = cellSaved.GetCell(x, y);
             if (cell != null)
@@ -76,11 +99,11 @@ namespace TileEngine
         public abstract MapCellType MakeMapCell(int x, int y);
 
         /// <summary>
-        /// This cancels all existing overrides
+        /// This cancels all existing visual overrides
         /// </summary>
-        public void ClearOverrides()
+        public void ClearVisualOverrides()
         {
-            cellTemporaryOverrides.Clear();
+            cellVisualOverrides.Clear();
         }
 
         /// <summary>
@@ -90,9 +113,9 @@ namespace TileEngine
         /// <param name="cell"></param>
         /// <param name="newX"></param>
         /// <param name="newY"></param>
-        public void SetOverride(MapCellType cell, int newX, int newY)
+        public void SetVisualOverride(MapCellType cell, int newX, int newY)
         {
-            cellTemporaryOverrides.SaveExternalCell(cell, newX, newY);
+            cellVisualOverrides.SaveExternalCell(cell, newX, newY);
         }
 
         /// <summary>
@@ -100,9 +123,9 @@ namespace TileEngine
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        public void ClearOverrideAtPosition(int x, int y)
+        public void ClearVisualOverrideAtPosition(int x, int y)
         {
-            cellTemporaryOverrides.ClearCellAtPosition(x, y);
+            cellVisualOverrides.ClearCellAtPosition(x, y);
         }
     }
 }

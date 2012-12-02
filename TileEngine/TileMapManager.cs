@@ -326,7 +326,7 @@ namespace TileEngine
                         int yIndex = firstY + y;
 
                         //we really are moving around with those firstX and firstY values
-                        cellToDraw = MyMap.GetMapCell(firstX + x, firstY + y);
+                        cellToDraw = MyMap.GetVisualMapCell(firstX + x, firstY + y);
 
                         cellToDraw.DrawCell(spriteBatch,
                             xDrawPosition,

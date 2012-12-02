@@ -61,7 +61,7 @@ namespace TileEngine
             {
                 for (int y = 0; y < height; y++)
                 {
-                    cell = map.GetMapCell(xmin + x, ymin + y);
+                    cell = map.GetVisualMapCell(xmin + x, ymin + y);
                     SortedPoint sp = new SortedPoint(cell);
                     savedCells[sp] = cell;
                 }
