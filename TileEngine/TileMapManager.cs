@@ -282,7 +282,7 @@ namespace TileEngine
                     obj.Texture,
                     destinationRectangle,
                     sourceRectangle,
-                    obj.Tint,
+                    Blending.MultiplyBlend(obj.Tint, CellTint(obj.SquareCoordinate)),
                     0f, //no rotation
                     Vector2.Zero, //don't use origin
                     SpriteEffects.None,
@@ -332,7 +332,9 @@ namespace TileEngine
                             xDrawPosition,
                             yDrawPosition,
                             calculateDepthOffset(maxdepth, x, y),
-                            heightRowDepthMod);
+                            heightRowDepthMod,
+                            CellTint(firstX + x, firstY + y)
+                            );
 
                         if (displayCellCoordinates && (Font != null))
                         {
@@ -351,6 +353,23 @@ namespace TileEngine
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Returns the Tint that the cell (at the specified world coordinates) should
+        /// be drawn at.  Default is white (no tint) but this can be overridden.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public virtual Color CellTint(int x, int y)
+        {
+            return Color.White;
+        }
+
+        public Color CellTint(Point p)
+        {
+            return CellTint(p.X, p.Y);
         }
 
         /// <summary>

@@ -14,6 +14,7 @@ namespace TileEngineDemo
         public TileMapManagerExtension(Game game, String contentLocation)
             : base(game, contentLocation)
         {
+            this.UseCrazyColors = false;
         }
 
         public override void Initialize()
@@ -72,6 +73,29 @@ namespace TileEngineDemo
         {
             foreach (NPCexample npc in this.objects)
                 npc.paralyzed = p;
+        }
+
+        public bool UseCrazyColors { get; set; }
+
+        public override Color CellTint(int x, int y)
+        {
+            if (UseCrazyColors)
+                return new Color(r, g, b);
+            else
+                return Color.White;
+        }
+
+        private byte r = 0;
+        private byte g = 0;
+        private byte b = 0;
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            r += 3;
+            g += 2;
+            b += 1;
         }
     }
 }

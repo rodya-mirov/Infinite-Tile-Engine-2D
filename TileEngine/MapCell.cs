@@ -99,8 +99,9 @@ namespace TileEngine
         /// <param name="startingDepth">The depth value of the bottom-most part of the cell.</param>
         /// <param name="heightRowDepthMod">The amount to decrease the depth with each stacked tile.</param>
         /// <param name="font">The font to draw the coordinates in</param>
+        /// <param name="tint">The color to tint the cell</param>
         public void DrawCell(SpriteBatch spriteBatch, int xDrawPosition, int yDrawPosition,
-            float startingDepth, float heightRowDepthMod)
+            float startingDepth, float heightRowDepthMod, Color tint)
         {
             float depth = startingDepth;
 
@@ -119,7 +120,7 @@ namespace TileEngine
                             Tile.TileHeight
                             ),
                         Tile.GetSourceRectangle(tileID),
-                        Color.White,
+                        tint,
                         0f,
                         Vector2.Zero,
                         SpriteEffects.None,

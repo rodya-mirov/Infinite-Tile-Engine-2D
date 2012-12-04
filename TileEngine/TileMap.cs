@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using TileEngine.Utilities;
+using Microsoft.Xna.Framework;
 
 namespace TileEngine
 {

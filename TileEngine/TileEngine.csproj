@@ -98,6 +98,7 @@
     <Compile Include="MapCache.cs" />
     <Compile Include="MapCell.cs" />
     <Compile Include="MapSaved.cs" />
+    <Compile Include="Utilities\Blending.cs" />
     <Compile Include="Utilities\Numerical.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tile.cs" />

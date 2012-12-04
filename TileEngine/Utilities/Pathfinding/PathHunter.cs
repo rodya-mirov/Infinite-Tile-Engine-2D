@@ -7,15 +7,8 @@ using TileEngine.Utilities.DataStructures;
 
 namespace TileEngine.Utilities.Pathfinding
 {
-    public class PathHunter
+    public static class PathHunter
     {
-        /// <summary>
-        /// Just making it so you can't instantiate these things I guess
-        /// </summary>
-        protected PathHunter()
-        {
-        }
-
         /// <summary>
         /// This constructs a path from the specified start point to
         /// some point in the set of destinations.

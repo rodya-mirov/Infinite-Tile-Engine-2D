@@ -174,6 +174,11 @@ namespace TileEngineDemo
             else
                 mapVisualizer.Pause(false);
 
+            if (ks.IsKeyDown(Keys.C))
+                mapVisualizer.UseCrazyColors = true;
+            else
+                mapVisualizer.UseCrazyColors = false;
+
             base.Update(gameTime);
         }
 
