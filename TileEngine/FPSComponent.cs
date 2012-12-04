@@ -45,10 +45,10 @@ namespace TileEngine
             batch = new SpriteBatch(game.GraphicsDevice);
 
             drawsSinceReset = 0;
-            drawnFPS = "D FPS: 0";
+            drawnFPS = "FPS: 0";
 
-            position1 = new Vector2(30, 30);
-            position2 = new Vector2(30, 31);
+            position1 = new Vector2(60, 30);
+            position2 = new Vector2(60, 31);
 
             Visible = true;
         }
@@ -64,7 +64,7 @@ namespace TileEngine
 
             if (timeSpan > interval)
             {
-                drawnFPS = "Draws FPS: " + ((2 * drawsSinceReset).ToString());
+                drawnFPS = "FPS: " + ((2 * drawsSinceReset).ToString());
                 timeSpan -= interval;
 
                 drawsSinceReset = 0;
