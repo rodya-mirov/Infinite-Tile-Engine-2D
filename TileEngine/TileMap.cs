@@ -15,9 +15,13 @@ namespace TileEngine
         private MapSaved<MapCellType> cellSaved;
         private MapSaved<MapCellType> cellVisualOverrides;
 
+        protected virtual bool UseCaching { get { return true; } }
+
         public TileMap()
         {
-            cellCache = new MapCache<MapCellType>(this);
+            if (UseCaching)
+                cellCache = new MapCache<MapCellType>(this);
+
             cellSaved = new MapSaved<MapCellType>(this);
             cellVisualOverrides = new MapSaved<MapCellType>(this);
         }
@@ -64,8 +68,15 @@ namespace TileEngine
             if (cell != null)
                 return cell;
 
-            cellCache.Guarantee(x, y);
-            return cellCache.Get(x, y);
+            if (UseCaching)
+            {
+                cellCache.Guarantee(x, y);
+                return cellCache.Get(x, y);
+            }
+            else
+            {
+                return this.MakeMapCell(x, y);
+            }
         }
 
         /// <summary>
@@ -85,8 +96,15 @@ namespace TileEngine
             if (cell != null)
                 return cell;
 
-            cellCache.Guarantee(x, y);
-            return cellCache.Get(x, y);
+            if (UseCaching)
+            {
+                cellCache.Guarantee(x, y);
+                return cellCache.Get(x, y);
+            }
+            else
+            {
+                return MakeMapCell(x, y);
+            }
         }
 
         /// <summary>
