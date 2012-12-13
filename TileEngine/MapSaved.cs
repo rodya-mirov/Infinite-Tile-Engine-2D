@@ -17,7 +17,7 @@ namespace TileEngine
     /// storage.
     /// </summary>
     public class MapSaved<MapCellType>
-        where MapCellType : MapCell, Translatable<MapCellType>
+        where MapCellType : MapCell, Copyable<MapCellType>
     {
         private SortedList<SortedPoint, MapCellType> savedCells;
         private TileMap<MapCellType> map;
@@ -47,38 +47,6 @@ namespace TileEngine
         }
 
         /// <summary>
-        /// Transcribes a block on the existing map and saves it permanently.
-        /// </summary>
-        /// <param name="xmin"></param>
-        /// <param name="ymin"></param>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        public void SaveExistingBlock(int xmin, int ymin, int width, int height)
-        {
-            MapCellType cell;
-
-            for (int x = 0; x < width; x++)
-            {
-                for (int y = 0; y < height; y++)
-                {
-                    cell = map.GetVisualMapCell(xmin + x, ymin + y);
-                    SortedPoint sp = new SortedPoint(cell);
-                    savedCells[sp] = cell;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Saves an externally constructed cell.
-        /// </summary>
-        /// <param name="cell"></param>
-        public void SaveExternalCell(MapCellType cell)
-        {
-            SortedPoint sp = new SortedPoint(cell);
-            savedCells[sp] = cell;
-        }
-
-        /// <summary>
         /// Saves a shifted copy of an externally constructed cell.
         /// </summary>
         /// <param name="cell"></param>
@@ -86,24 +54,9 @@ namespace TileEngine
         /// <param name="newY"></param>
         public void SaveExternalCell(MapCellType cell, int newX, int newY)
         {
-            Translatable<MapCellType> translatableCell = cell;
-            MapCellType newCell = translatableCell.CopyAt(newX, newY);
-
-            SortedPoint sp = new SortedPoint(newCell);
-            savedCells[sp] = newCell;
-        }
-
-        /// <summary>
-        /// Writes down a constructed block of MapCells to be permanently saved.
-        /// </summary>
-        /// <param name="block"></param>
-        public void SaveExternalBlock(MapCell[,] block)
-        {
-            foreach (MapCellType cell in block)
-            {
-                SortedPoint sp = new SortedPoint(cell);
-                savedCells[sp] = cell;
-            }
+            SortedPoint sp = new SortedPoint(newX, newY);
+            Copyable<MapCellType> cc = (Copyable<MapCellType>)cell;
+            savedCells[sp] = cc.Copy();
         }
 
         /// <summary>
@@ -124,10 +77,10 @@ namespace TileEngine
             {
                 for (int y = 0; y < height; y++)
                 {
-                    Translatable<MapCellType> copyable = block[x, y];
-                    cell = copyable.CopyAt(xmin + x, ymin + y);
+                    Copyable<MapCellType> copyable = block[x, y];
+                    cell = copyable.Copy();
 
-                    SortedPoint sp = new SortedPoint(cell);
+                    SortedPoint sp = new SortedPoint(x + xmin, y + ymin);
                     savedCells[sp] = cell;
                 }
             }

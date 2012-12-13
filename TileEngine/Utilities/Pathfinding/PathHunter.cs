@@ -33,7 +33,7 @@ namespace TileEngine.Utilities.Pathfinding
         /// <returns>The shortest path from here to somewhere in there; returns null iff there is no path of cost less than maxCost.</returns>
         public static Path GetPath<T, S, M>(HashSet<Point> startPoints, HashSet<Point> goalPoints, int maxCost, TileMapManager<T, S, M> manager, TimeSpan startTime)
             where T : InGameObject
-            where S : MapCell, Translatable<S>
+            where S : MapCell, Copyable<S>
             where M : TileMap<S>, new()
         {
             //check for trivialities- we can't find a path to nowhere or from nowhere
@@ -44,10 +44,7 @@ namespace TileEngine.Utilities.Pathfinding
 
             if (goalPoints.Count == 1)
             {
-                //looks funny, but as an unindexed collection, I don't know a better way
-                //this just makes the heap a PathToPointHeap to the ONLY point p
-                foreach (Point p in goalPoints)
-                    heap = new PathToPointHeap(p);
+                heap = new PathToPointHeap(goalPoints.Single());
             }
             else
             {
@@ -138,7 +135,7 @@ namespace TileEngine.Utilities.Pathfinding
         /// <returns>The shortest path from here to somewhere in there; returns null iff there is no path of cost less than maxCost.</returns>
         public static Path GetPath<T, S, M>(HashSet<Point> startPoints, HashSet<Point> goalPoints, int maxCost, TileMapManager<T, S, M> manager, GameTime startTime)
             where T : InGameObject
-            where S : MapCell, Translatable<S>
+            where S : MapCell, Copyable<S>
             where M : TileMap<S>, new()
         {
             return GetPath(startPoints, goalPoints, maxCost, manager, startTime.TotalGameTime);
@@ -168,7 +165,7 @@ namespace TileEngine.Utilities.Pathfinding
         /// <returns>The shortest path from here to somewhere in there; returns null iff there is no path of cost less than maxCost.</returns>
         public static Path GetPath<T, S, M>(Point startPoint, HashSet<Point> goalPoints, int maxCost, TileMapManager<T, S, M> manager, GameTime startTime)
             where T : InGameObject
-            where S : MapCell, Translatable<S>
+            where S : MapCell, Copyable<S>
             where M : TileMap<S>, new()
         {
             return PathHunter.GetPath<T, S, M>(startPoint, goalPoints, maxCost, manager, startTime.TotalGameTime);
@@ -198,7 +195,7 @@ namespace TileEngine.Utilities.Pathfinding
         /// <returns>The shortest path from here to somewhere in there; returns null iff there is no path of cost less than maxCost.</returns>
         public static Path GetPath<T, S, M>(Point startPoint, HashSet<Point> goalPoints, int maxCost, TileMapManager<T, S, M> manager, TimeSpan startTime)
             where T : InGameObject
-            where S : MapCell, Translatable<S>
+            where S : MapCell, Copyable<S>
             where M : TileMap<S>, new()
         {
             HashSet<Point> startPoints = new HashSet<Point>();

@@ -12,7 +12,7 @@ namespace TileEngine
 {
     public abstract class TileMapManager<InGameObjectType, MapCellType, MapType>
         where InGameObjectType : InGameObject
-        where MapCellType : MapCell, Translatable<MapCellType>
+        where MapCellType : MapCell, Copyable<MapCellType>
         where MapType : TileMap<MapCellType>, new()
     {
         SpriteBatch spriteBatch;
@@ -116,6 +116,7 @@ namespace TileEngine
         public virtual void Initialize()
         {
             MyMap = makeMap();
+            MyMap.SetUpCache();
         }
 
         protected virtual MapType makeMap()
@@ -147,8 +148,12 @@ namespace TileEngine
             this.SetViewDimensions(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
         }
 
+        protected GameTime currentTime = null;
+
         public virtual void Update(GameTime gameTime)
         {
+            this.currentTime = gameTime;
+
             MouseState ms = Mouse.GetState();
 
             processMouseMovement(ms);

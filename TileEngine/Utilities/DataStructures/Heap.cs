@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Collections;
 
 namespace TileEngine.Utilities.DataStructures
 {
@@ -12,7 +13,7 @@ namespace TileEngine.Utilities.DataStructures
     /// Strictly speaking, this is a binary heap, with all that entails.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class Heap<T>
+    public abstract class Heap<T> : IEnumerable<T>
     {
         /// <summary>
         /// Underlying array.
@@ -148,6 +149,23 @@ namespace TileEngine.Utilities.DataStructures
         public void Clear()
         {
             baseList.Clear();
+        }
+
+        /// <summary>
+        /// Yields the elements of the Heap in no particular
+        /// order.  In particular, is not guaranteed to give
+        /// the best element first!
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerator<T> GetEnumerator()
+        {
+            foreach (T t in baseList)
+                yield return t;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
         }
     }
 }

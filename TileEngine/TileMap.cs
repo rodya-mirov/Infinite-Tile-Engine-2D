@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 namespace TileEngine
 {
     public abstract class TileMap<MapCellType>
-        where MapCellType : MapCell, Translatable<MapCellType>
+        where MapCellType : MapCell, Copyable<MapCellType>
     {
         public const int randomSeed = 121213;
         private MapCache<MapCellType> cellCache;
@@ -19,32 +19,31 @@ namespace TileEngine
 
         public TileMap()
         {
-            if (UseCaching)
-                cellCache = new MapCache<MapCellType>(this);
-
             cellSaved = new MapSaved<MapCellType>(this);
             cellVisualOverrides = new MapSaved<MapCellType>(this);
         }
 
-        #region Constructed Cell Adding
-        public void AddConstructedCell(MapCellType cell)
+        public void SetUpCache()
         {
-            cellSaved.SaveExternalCell(cell);
+            if (UseCaching)
+                cellCache = new MapCache<MapCellType>(this);
         }
 
+        #region Constructed Cell Adding
+        /// <summary>
+        /// Saves a copy of the attached cell at the specified coordinates
+        /// </summary>
+        /// <param name="cell"></param>
+        /// <param name="newX"></param>
+        /// <param name="newY"></param>
         public void AddConstructedCell(MapCellType cell, int newX, int newY)
         {
             cellSaved.SaveExternalCell(cell, newX, newY);
         }
 
-        public void AddConstructedBlock(MapCellType[,] cells)
+        public void AddConstructedBlock(MapCellType[,] cells, int leftX, int topY)
         {
-            cellSaved.SaveExternalBlock(cells);
-        }
-
-        public void AddConstructedBlock(MapCellType[,] cells, int newX, int newY)
-        {
-            cellSaved.SaveExternalBlock(cells, newX, newY);
+            cellSaved.SaveExternalBlock(cells, leftX, topY);
         }
         #endregion
 

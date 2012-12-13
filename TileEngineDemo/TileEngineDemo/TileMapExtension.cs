@@ -8,6 +8,14 @@ namespace TileEngineDemo
 {
     public class TileMapExtension : TileMap<MapCell>
     {
+        public TileMapExtension()
+            : base()
+        {
+            grassTile = new MapCell(0);
+        }
+
+        private MapCell grassTile;
+
         /// <summary>
         /// The "procedural generation" of this map is
         /// just "uniform grass every damn where."
@@ -17,7 +25,11 @@ namespace TileEngineDemo
         /// <returns></returns>
         public override MapCell MakeMapCell(int x, int y)
         {
-            return new MapCell(0, x, y);
+            if (grassTile == null)
+            {
+                throw new InvalidProgramException();
+            }
+            return grassTile;
         }
     }
 }

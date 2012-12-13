@@ -9,11 +9,8 @@ using TileEngine.Utilities;
 
 namespace TileEngine
 {
-    public class MapCell : Translatable<MapCell>
+    public class MapCell : Copyable<MapCell>
     {
-        public int X { get; protected set; }
-        public int Y { get; protected set; }
-
         protected SortedDictionary<int, Queue<int>> Tiles;
         public SortedDictionary<int, Queue<int>> TilesCopy()
         {
@@ -32,8 +29,7 @@ namespace TileEngine
         /// <param name="baseTile"></param>
         /// <param name="x"></param>
         /// <param name="y"></param>
-        public MapCell(int baseTile, int x, int y)
-            : this(x, y)
+        public MapCell(int baseTile) : this()
         {
             Tiles[0] = new Queue<int>();
 
@@ -44,23 +40,18 @@ namespace TileEngine
         /// Like the public constructor, but doesn't set up a base tile.
         /// Not to be used lightly :P
         /// </summary>
-        protected MapCell(int x, int y)
+        protected MapCell()
         {
-            this.X = x;
-            this.Y = y;
-
             Tiles = new SortedDictionary<int, Queue<int>>();
         }
 
         /// <summary>
-        /// Copies this cell into a new location!
+        /// Copies this cell!
         /// </summary>
-        /// <param name="newX"></param>
-        /// <param name="newY"></param>
         /// <returns></returns>
-        public MapCell CopyAt(int newX, int newY)
+        public MapCell Copy()
         {
-            MapCell output = new MapCell(newX, newY);
+            MapCell output = new MapCell();
 
             foreach (int key in this.Tiles.Keys)
             {
@@ -141,12 +132,6 @@ namespace TileEngine
         {
             this.X = x;
             this.Y = y;
-        }
-
-        public SortedPoint(MapCell cell)
-        {
-            this.X = cell.X;
-            this.Y = cell.Y;
         }
 
         public int CompareTo(SortedPoint other)

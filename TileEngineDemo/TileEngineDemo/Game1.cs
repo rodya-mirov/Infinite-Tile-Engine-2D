@@ -17,10 +17,14 @@ namespace TileEngineDemo
     /// </summary>
     public class Game1 : Microsoft.Xna.Framework.Game
     {
+        public const bool hyperDrive = true; //for debug purposes; this makes the framerate speed wildly out of control
+
         GraphicsDeviceManager graphics;
         TileMapManagerExtension mapVisualizer;
         TileMapComponent<InGameObject> mapComponent;
         FPSComponent fpsComponent;
+
+        private int preferredWindowedWidth, preferredWindowedHeight;
 
         SpriteFont segoe, bigSegoe;
 
@@ -51,6 +55,16 @@ namespace TileEngineDemo
 
             Window.AllowUserResizing = true;
             Window.ClientSizeChanged += new EventHandler<EventArgs>(Window_ClientSizeChanged);
+
+            preferredWindowedWidth = graphics.PreferredBackBufferWidth;
+            preferredWindowedHeight = graphics.PreferredBackBufferHeight;
+
+            if (hyperDrive)
+            {
+                this.IsFixedTimeStep = false;
+                this.graphics.SynchronizeWithVerticalRetrace = false;
+                this.graphics.ApplyChanges();
+            }
 
             base.Initialize();
         }
@@ -98,46 +112,46 @@ namespace TileEngineDemo
             MapCell cell;
 
             //0, 0, left corner
-            cell = new MapCell(70, 0, 0);
+            cell = new MapCell(70);
             cell.AddTile(91, 0);
             cell.AddTile(31, 1);
             houseBlock[0, 0] = cell;
 
             //0, 2, top corner
-            cell = new MapCell(70, 0, 1);
+            cell = new MapCell(70);
             cell.AddTile(51, 0);
             houseBlock[0, 1] = cell;
 
             //1, 0, bottom wall
-            cell = new MapCell(70, 1, 0);
+            cell = new MapCell(70);
             cell.AddTile(91, 0);
             cell.AddTile(31, 1);
             houseBlock[1, 0] = cell;
 
             //1, 1, top wall
-            cell = new MapCell(70, 1, 1);
+            cell = new MapCell(70);
             cell.AddTile(60, 0);
             houseBlock[1, 1] = cell;
 
             //2, 0, bottom wall
-            cell = new MapCell(70, 2, 0);
+            cell = new MapCell(70);
             cell.AddTile(91, 0);
             cell.AddTile(31, 1);
             houseBlock[2, 0] = cell;
 
             //2, 1, top wall
-            cell = new MapCell(70, 2, 1);
+            cell = new MapCell(70);
             cell.AddTile(60, 0);
             houseBlock[2, 1] = cell;
 
             //3, 0, right corner
-            cell = new MapCell(70, 3, 0);
+            cell = new MapCell(70);
             cell.AddTile(91, 0);
             cell.AddTile(31, 1);
             houseBlock[3, 0] = cell;
 
             //3, 1, bottom corner
-            cell = new MapCell(70, 3, 1);
+            cell = new MapCell(70);
             cell.AddTile(94, 0);
             cell.AddTile(37, 1);
             houseBlock[3, 1] = cell;
@@ -179,7 +193,53 @@ namespace TileEngineDemo
             else
                 mapVisualizer.UseCrazyColors = false;
 
+            if (ks.IsKeyDown(Keys.Enter))
+            {
+                if (!graphics.IsFullScreen)
+                    ToggleFullScreen();
+            }
+            else
+            {
+                if (graphics.IsFullScreen)
+                    ToggleFullScreen();
+            }
+
             base.Update(gameTime);
+        }
+
+        /// <summary>
+        /// Toggle full screen on or off.  Also keeps the camera so that it's centered on the same point
+        /// (assuming the window itself is centered)
+        /// </summary>
+        private void ToggleFullScreen()
+        {
+            int newWidth, newHeight;
+            int oldWidth = graphics.PreferredBackBufferWidth;
+            int oldHeight = graphics.PreferredBackBufferHeight;
+
+            if (graphics.IsFullScreen)
+            {
+                newWidth = preferredWindowedWidth;
+                newHeight = preferredWindowedHeight;
+            }
+            else
+            {
+                newWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+                newHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            }
+
+            graphics.PreferredBackBufferWidth = newWidth;
+            graphics.PreferredBackBufferHeight = newHeight;
+
+            Point center = Camera.GetCenter();
+
+            graphics.IsFullScreen = !graphics.IsFullScreen;
+
+            this.mapVisualizer.SetViewDimensions(newWidth, newHeight);
+
+            Camera.CenterOnPoint(center);
+
+            graphics.ApplyChanges();
         }
 
         private void processMovement(KeyboardState ks)

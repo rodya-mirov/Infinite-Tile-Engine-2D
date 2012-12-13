@@ -99,6 +99,7 @@
     <Compile Include="MapCell.cs" />
     <Compile Include="MapSaved.cs" />
     <Compile Include="Utilities\Blending.cs" />
+    <Compile Include="Utilities\Copyable.cs" />
     <Compile Include="Utilities\Numerical.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tile.cs" />
@@ -107,7 +108,6 @@
     <Compile Include="Utilities\DataStructures\Heap.cs" />
     <Compile Include="Utilities\Pathfinding\Path.cs" />
     <Compile Include="Utilities\Pathfinding\PathHunter.cs" />
-    <Compile Include="Utilities\Translatable.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

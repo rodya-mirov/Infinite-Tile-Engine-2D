@@ -43,7 +43,7 @@ namespace TileEngineDemo
             for (int i = 0; i < 4; i++)
                 sources[i] = new Rectangle(0, 64 * i, 64, 64);
 
-            HighlightCell = new MapCell(1, 0, 0);
+            HighlightCell = new MapCell(1);
         }
 
         private const int halfWidth = 10;

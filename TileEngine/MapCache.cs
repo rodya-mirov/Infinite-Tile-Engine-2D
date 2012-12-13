@@ -8,7 +8,7 @@ using TileEngine.Utilities;
 namespace TileEngine
 {
     public class MapCache<MapCellType>
-        where MapCellType : MapCell, Translatable<MapCellType>
+        where MapCellType : MapCell, Copyable<MapCellType>
     {
         /// <summary>
         /// These should be set large enough so that the map can comfortably be drawn
