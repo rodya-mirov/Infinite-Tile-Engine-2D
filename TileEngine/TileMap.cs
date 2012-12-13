@@ -11,22 +11,22 @@ namespace TileEngine
         where MapCellType : MapCell, Copyable<MapCellType>
     {
         public const int randomSeed = 121213;
-        private MapCache<MapCellType> cellCache;
-        private MapSaved<MapCellType> cellSaved;
-        private MapSaved<MapCellType> cellVisualOverrides;
+        private MapCache<MapCellType> visualCellCache;
+        private MapSaved<MapCellType> savedRealCells;
+        private MapSaved<MapCellType> visualOverrideCells;
 
         protected virtual bool UseCaching { get { return true; } }
 
         public TileMap()
         {
-            cellSaved = new MapSaved<MapCellType>(this);
-            cellVisualOverrides = new MapSaved<MapCellType>(this);
+            savedRealCells = new MapSaved<MapCellType>(this);
+            visualOverrideCells = new MapSaved<MapCellType>(this);
         }
 
         public void SetUpCache()
         {
             if (UseCaching)
-                cellCache = new MapCache<MapCellType>(this);
+                visualCellCache = new MapCache<MapCellType>(this);
         }
 
         #region Constructed Cell Adding
@@ -38,12 +38,12 @@ namespace TileEngine
         /// <param name="newY"></param>
         public void AddConstructedCell(MapCellType cell, int newX, int newY)
         {
-            cellSaved.SaveExternalCell(cell, newX, newY);
+            savedRealCells.SaveExternalCell(cell, newX, newY);
         }
 
         public void AddConstructedBlock(MapCellType[,] cells, int leftX, int topY)
         {
-            cellSaved.SaveExternalBlock(cells, leftX, topY);
+            savedRealCells.SaveExternalBlock(cells, leftX, topY);
         }
         #endregion
 
@@ -59,18 +59,18 @@ namespace TileEngine
         {
             MapCellType cell;
 
-            cell = cellVisualOverrides.GetCell(x, y);
+            cell = visualOverrideCells.GetCell(x, y);
             if (cell != null)
                 return cell;
 
-            cell = cellSaved.GetCell(x, y);
+            cell = savedRealCells.GetCell(x, y);
             if (cell != null)
                 return cell;
 
             if (UseCaching)
             {
-                cellCache.Guarantee(x, y);
-                return cellCache.Get(x, y);
+                visualCellCache.Guarantee(x, y);
+                return visualCellCache.Get(x, y);
             }
             else
             {
@@ -91,19 +91,11 @@ namespace TileEngine
         {
             MapCellType cell;
 
-            cell = cellSaved.GetCell(x, y);
+            cell = savedRealCells.GetCell(x, y);
             if (cell != null)
                 return cell;
 
-            if (UseCaching)
-            {
-                cellCache.Guarantee(x, y);
-                return cellCache.Get(x, y);
-            }
-            else
-            {
-                return MakeMapCell(x, y);
-            }
+            return MakeMapCell(x, y);
         }
 
         /// <summary>
@@ -121,7 +113,7 @@ namespace TileEngine
         /// </summary>
         public void ClearVisualOverrides()
         {
-            cellVisualOverrides.Clear();
+            visualOverrideCells.Clear();
         }
 
         /// <summary>
@@ -133,7 +125,7 @@ namespace TileEngine
         /// <param name="newY"></param>
         public void SetVisualOverride(MapCellType cell, int newX, int newY)
         {
-            cellVisualOverrides.SaveExternalCell(cell, newX, newY);
+            visualOverrideCells.SaveExternalCell(cell, newX, newY);
         }
 
         /// <summary>
@@ -143,7 +135,7 @@ namespace TileEngine
         /// <param name="y"></param>
         public void ClearVisualOverrideAtPosition(int x, int y)
         {
-            cellVisualOverrides.ClearCellAtPosition(x, y);
+            visualOverrideCells.ClearCellAtPosition(x, y);
         }
     }
 }

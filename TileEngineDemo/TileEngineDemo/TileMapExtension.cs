@@ -8,6 +8,8 @@ namespace TileEngineDemo
 {
     public class TileMapExtension : TileMap<MapCell>
     {
+        protected override bool UseCaching { get { return true; } }
+
         public TileMapExtension()
             : base()
         {

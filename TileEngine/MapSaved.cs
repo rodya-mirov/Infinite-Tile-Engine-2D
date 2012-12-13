@@ -19,14 +19,14 @@ namespace TileEngine
     public class MapSaved<MapCellType>
         where MapCellType : MapCell, Copyable<MapCellType>
     {
-        private SortedList<SortedPoint, MapCellType> savedCells;
+        private Dictionary<Point, MapCellType> savedCells;
         private TileMap<MapCellType> map;
 
         public MapSaved(TileMap<MapCellType> map)
         {
             this.map = map;
 
-            savedCells = new SortedList<SortedPoint, MapCellType>();
+            savedCells = new Dictionary<Point, MapCellType>();
         }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace TileEngine
         /// <returns></returns>
         public MapCellType GetCell(int x, int y)
         {
-            SortedPoint p = new SortedPoint(x, y);
+            Point p = new Point(x, y);
 
             if (savedCells.ContainsKey(p))
                 return savedCells[p];
@@ -54,7 +54,7 @@ namespace TileEngine
         /// <param name="newY"></param>
         public void SaveExternalCell(MapCellType cell, int newX, int newY)
         {
-            SortedPoint sp = new SortedPoint(newX, newY);
+            Point sp = new Point(newX, newY);
             Copyable<MapCellType> cc = (Copyable<MapCellType>)cell;
             savedCells[sp] = cc.Copy();
         }
@@ -80,7 +80,7 @@ namespace TileEngine
                     Copyable<MapCellType> copyable = block[x, y];
                     cell = copyable.Copy();
 
-                    SortedPoint sp = new SortedPoint(x + xmin, y + ymin);
+                    Point sp = new Point(x + xmin, y + ymin);
                     savedCells[sp] = cell;
                 }
             }
@@ -103,7 +103,7 @@ namespace TileEngine
         /// <param name="y"></param>
         public void ClearCellAtPosition(int x, int y)
         {
-            SortedPoint sp = new SortedPoint(x, y);
+            Point sp = new Point(x, y);
             if (savedCells.ContainsKey(sp))
                 savedCells.Remove(sp);
         }

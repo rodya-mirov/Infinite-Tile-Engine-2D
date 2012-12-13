@@ -122,24 +122,4 @@ namespace TileEngine
             }
         }
     }
-
-
-    public struct SortedPoint : IComparable<SortedPoint>
-    {
-        public int X, Y;
-
-        public SortedPoint(int x, int y)
-        {
-            this.X = x;
-            this.Y = y;
-        }
-
-        public int CompareTo(SortedPoint other)
-        {
-            if (this.X != other.X)
-                return this.X - other.X;
-            else
-                return this.Y - other.Y;
-        }
-    }
 }
