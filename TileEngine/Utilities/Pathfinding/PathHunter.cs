@@ -60,6 +60,9 @@ namespace TileEngine.Utilities.Pathfinding
             {
                 bestDistancesFound[startPoint] = 0;
                 heap.Add(new Path(startPoint));
+
+                if (goalPoints.Contains(startPoint))
+                    return new Path(startPoint);
             }
 
             while (heap.Count > 0)
