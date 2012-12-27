@@ -274,6 +274,9 @@ namespace TileEngine
         {
             foreach (InGameObject obj in InGameObjects())
             {
+                if (!obj.Visible)
+                    continue;
+
                 Rectangle sourceRectangle = obj.SourceRectangle;
 
                 Rectangle destinationRectangle = obj.MakeDestinationRectangle(firstX, firstY, offsetX, offsetY);

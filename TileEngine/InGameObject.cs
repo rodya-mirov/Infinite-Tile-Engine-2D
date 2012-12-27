@@ -56,6 +56,14 @@ namespace TileEngine
         }
 
         /// <summary>
+        /// Whether or not this object should be drawn.
+        /// </summary>
+        public virtual bool Visible
+        {
+            get { return true; }
+        }
+
+        /// <summary>
         /// Constructs a rectangle bounding the object in the world.
         /// The default behavior is a single pixel, which is located
         /// at the supplied xPositionWorld,yPositionWorld
