@@ -32,6 +32,28 @@ namespace TileEngine
         public abstract int VisualOffsetY { get; }
 
         /// <summary>
+        /// Roughly speaking, how tall the object is,
+        /// visually.  This is used for centering the
+        /// camera, and the default value of 0 is
+        /// fine for most objects.
+        /// </summary>
+        public virtual int VisualHeight
+        {
+            get { return 0; }
+        }
+
+        /// <summary>
+        /// Roughly speaking, how wide the object is,
+        /// visually.  This is used for centering the
+        /// camera, and the default value of 0 is
+        /// fine for most objects.
+        /// </summary>
+        public virtual int VisualWidth
+        {
+            get { return 0; }
+        }
+
+        /// <summary>
         /// General update method; should be called once per timestep.
         /// </summary>
         public abstract void Update(GameTime time);

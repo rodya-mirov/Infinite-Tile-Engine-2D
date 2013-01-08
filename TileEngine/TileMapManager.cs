@@ -15,7 +15,7 @@ namespace TileEngine
         where MapCellType : MapCell, Copyable<MapCellType>
         where MapType : TileMap<MapCellType>, new()
     {
-        SpriteBatch spriteBatch;
+        protected SpriteBatch spriteBatch;
 
         public SpriteFont Font { get; set; }
 
