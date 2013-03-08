@@ -146,7 +146,7 @@ namespace TileEngine
         /// </summary>
         /// <param name="tileID"></param>
         /// <param name="level"></param>
-        public void AddTile(int tileID, int level)
+        public virtual void AddTile(int tileID, int level)
         {
             if (!Tiles.Keys.Contains(level))
                 Tiles[level] = new Queue<int>();
