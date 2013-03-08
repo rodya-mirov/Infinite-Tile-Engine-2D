@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace TileEngineDemo
 {
-    public class TileMapManagerExtension : TileMapManager<InGameObject, MapCell, TileMapExtension>
+    public class TileMapManagerExtension : TileMapManager<InGameObject, MapCellExtension, TileMapExtension>
     {
         protected List<InGameObject> objects;
 

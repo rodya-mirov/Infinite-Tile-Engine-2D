@@ -93,7 +93,7 @@ namespace TileEngineDemo
 
         private void BuildDefaultTiles()
         {
-            MapCell[,] houseBlock = constructHouse();
+            MapCellExtension[,] houseBlock = constructHouse();
             mapVisualizer.MyMap.AddConstructedBlock(houseBlock, 5, 5);
             mapVisualizer.MyMap.AddConstructedBlock(houseBlock, 5, 7);
             mapVisualizer.MyMap.AddConstructedBlock(houseBlock, 8, 7);
@@ -105,53 +105,53 @@ namespace TileEngineDemo
         /// A pre-made method which shows how to construct a house
         /// </summary>
         /// <returns></returns>
-        private MapCell[,] constructHouse()
+        private MapCellExtension[,] constructHouse()
         {
-            MapCell[,] houseBlock = new MapCell[4, 2];
+            MapCellExtension[,] houseBlock = new MapCellExtension[4, 2];
 
-            MapCell cell;
+            MapCellExtension cell;
 
             //0, 0, left corner
-            cell = new MapCell(70);
+            cell = new MapCellExtension(70, false, false, false, false);
             cell.AddTile(91, 0);
             cell.AddTile(31, 1);
             houseBlock[0, 0] = cell;
 
             //0, 2, top corner
-            cell = new MapCell(70);
+            cell = new MapCellExtension(70, false, false, false, false);
             cell.AddTile(51, 0);
             houseBlock[0, 1] = cell;
 
             //1, 0, bottom wall
-            cell = new MapCell(70);
+            cell = new MapCellExtension(70, false, false, false, false);
             cell.AddTile(91, 0);
             cell.AddTile(31, 1);
             houseBlock[1, 0] = cell;
 
             //1, 1, top wall
-            cell = new MapCell(70);
+            cell = new MapCellExtension(70, false, false, false, false);
             cell.AddTile(60, 0);
             houseBlock[1, 1] = cell;
 
             //2, 0, bottom wall
-            cell = new MapCell(70);
+            cell = new MapCellExtension(70, false, false, false, false);
             cell.AddTile(91, 0);
             cell.AddTile(31, 1);
             houseBlock[2, 0] = cell;
 
             //2, 1, top wall
-            cell = new MapCell(70);
+            cell = new MapCellExtension(70, false, false, false, false);
             cell.AddTile(60, 0);
             houseBlock[2, 1] = cell;
 
             //3, 0, right corner
-            cell = new MapCell(70);
+            cell = new MapCellExtension(70, false, false, false, false);
             cell.AddTile(91, 0);
             cell.AddTile(31, 1);
             houseBlock[3, 0] = cell;
 
             //3, 1, bottom corner
-            cell = new MapCell(70);
+            cell = new MapCellExtension(70, false, false, false, false);
             cell.AddTile(94, 0);
             cell.AddTile(37, 1);
             houseBlock[3, 1] = cell;

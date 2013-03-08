@@ -11,7 +11,7 @@ namespace TileEngineDemo
     public class NPCexample : InGameObject
     {
         private TileMapExtension map { get; set; }
-        private static MapCell HighlightCell { get; set; }
+        private static MapCellExtension HighlightCell { get; set; }
 
         public NPCexample(int x, int y, TileMapExtension map)
         {
@@ -43,7 +43,7 @@ namespace TileEngineDemo
             for (int i = 0; i < 4; i++)
                 sources[i] = new Rectangle(0, 64 * i, 64, 64);
 
-            HighlightCell = new MapCell(1);
+            HighlightCell = new MapCellExtension(1, false, false, false, false);
         }
 
         private const int halfWidth = 10;

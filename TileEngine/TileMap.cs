@@ -10,15 +10,45 @@ namespace TileEngine
     public abstract class TileMap<MapCellType>
         where MapCellType : MapCell, Copyable<MapCellType>
     {
-        public const int randomSeed = 121213;
+        public readonly bool LimitedMap;
+        /// <summary>
+        /// Note that the bounds are XMin <= x < XMax, YMin <= y < YMax
+        /// </summary>
+        public readonly int XMin, XMax, YMin, YMax;
+
+        public bool IsValidCellIndex(int x, int y)
+        {
+            if (!LimitedMap)
+                return true;
+
+            return XMin <= x && x < XMax && YMin <= y && y < YMax;
+        }
+
         private MapCache<MapCellType> visualCellCache;
         private MapSaved<MapCellType> savedRealCells;
         private MapSaved<MapCellType> visualOverrideCells;
 
         protected virtual bool UseCaching { get { return true; } }
 
-        public TileMap()
+        protected TileMap(bool limited,
+            int xmin = int.MinValue, int xmax = int.MaxValue, int ymin = int.MinValue, int ymax = int.MaxValue)
         {
+            this.LimitedMap = limited;
+            if (limited)
+            {
+                this.XMin = xmin;
+                this.YMin = ymin;
+                this.XMax = xmax;
+                this.YMax = ymax;
+            }
+            else
+            {
+                this.XMin = int.MinValue;
+                this.YMin = int.MinValue;
+                this.XMax = int.MaxValue;
+                this.YMax = int.MaxValue;
+            }
+
             savedRealCells = new MapSaved<MapCellType>(this);
             visualOverrideCells = new MapSaved<MapCellType>(this);
         }

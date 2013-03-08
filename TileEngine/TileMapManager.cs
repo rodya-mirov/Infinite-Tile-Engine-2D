@@ -333,28 +333,31 @@ namespace TileEngine
                         int xIndex = firstX + x;
                         int yIndex = firstY + y;
 
-                        //we really are moving around with those firstX and firstY values
-                        cellToDraw = MyMap.GetVisualMapCell(firstX + x, firstY + y);
-
-                        cellToDraw.DrawCell(spriteBatch,
-                            xDrawPosition,
-                            yDrawPosition,
-                            calculateDepthOffset(maxdepth, x, y),
-                            heightRowDepthMod,
-                            CellTint(firstX + x, firstY + y)
-                            );
-
-                        if (displayCellCoordinates && (Font != null))
+                        if (MyMap.IsValidCellIndex(xIndex, yIndex))
                         {
-                            String s = "(" + (firstX + x) + "," + (firstY + y) + ")";
-                            Vector2 measurement = Font.MeasureString(s);
+                            //we really are moving around with those firstX and firstY values
+                            cellToDraw = MyMap.GetVisualMapCell(firstX + x, firstY + y);
 
-                            Vector2 drawPosition = new Vector2(
-                                xDrawPosition + Tile.TileWidth / 2 - measurement.X / 2 + Tile.TileVisualOffsetX,
-                                yDrawPosition - measurement.Y / 2 + Tile.TileVisualOffsetY
+                            cellToDraw.DrawCell(spriteBatch,
+                                xDrawPosition,
+                                yDrawPosition,
+                                calculateDepthOffset(maxdepth, x, y),
+                                heightRowDepthMod,
+                                CellTint(firstX + x, firstY + y)
                                 );
 
-                            spriteBatch.DrawString(Font, s, drawPosition, Color.White);
+                            if (displayCellCoordinates && (Font != null))
+                            {
+                                String s = "(" + (firstX + x) + "," + (firstY + y) + ")";
+                                Vector2 measurement = Font.MeasureString(s);
+
+                                Vector2 drawPosition = new Vector2(
+                                    xDrawPosition + Tile.TileWidth / 2 - measurement.X / 2 + Tile.TileVisualOffsetX,
+                                    yDrawPosition - measurement.Y / 2 + Tile.TileVisualOffsetY
+                                    );
+
+                                spriteBatch.DrawString(Font, s, drawPosition, Color.White);
+                            }
                         }
 
                         x++;

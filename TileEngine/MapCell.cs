@@ -12,6 +12,81 @@ namespace TileEngine
     public class MapCell : Copyable<MapCell>
     {
         protected SortedDictionary<int, Queue<int>> Tiles;
+
+        #region Border information
+        /// <summary>
+        /// Whether to use borders at all.  Default is false.
+        /// </summary>
+        protected virtual bool UseBorders { get { return false; } }
+
+        /// <summary>
+        /// If using borders, whether to use the left border.
+        /// 
+        /// Default is true.
+        /// </summary>
+        protected virtual bool UseLeftBorder { get { return true; } }
+
+        /// <summary>
+        /// If using borders, the tile index for the left border, which visually,
+        /// is the "upper left".
+        /// 
+        /// Default throws an error.
+        /// </summary>
+        protected virtual int LeftBorderTileIndex { get { throw new NotImplementedException(); } }
+
+        /// <summary>
+        /// If using borders, whether to use the right border.
+        /// 
+        /// Default is true.
+        /// </summary>
+        protected virtual bool UseRightBorder { get { return true; } }
+
+        /// <summary>
+        /// If using borders, the tile index for the right border, which visually,
+        /// is the "lower right".
+        /// 
+        /// Default throws an error.
+        /// </summary>
+        protected virtual int RightBorderTileIndex { get { throw new NotImplementedException(); } }
+
+        /// <summary>
+        /// If using borders, whether to use the top border.
+        /// 
+        /// Default is true.
+        /// </summary>
+        protected virtual bool UseTopBorder { get { return true; } }
+
+        /// <summary>
+        /// If using borders, the tile index for the top border, which visually,
+        /// is the "lower left".
+        /// 
+        /// Default throws an error.
+        /// </summary>
+        protected virtual int TopBorderTileIndex { get { throw new NotImplementedException(); } }
+
+        /// <summary>
+        /// If using borders, whether to use the bottom border.
+        /// 
+        /// Default is true.
+        /// </summary>
+        protected virtual bool UseBottomBorder { get { return true; } }
+
+        /// <summary>
+        /// If using borders, the tile index for the bottom border, which visually,
+        /// is the "upper right".
+        /// 
+        /// Default throws an error.
+        /// </summary>
+        protected virtual int BottomBorderTileIndex { get { throw new NotImplementedException(); } }
+        #endregion
+
+        /// <summary>
+        /// This is how much to translate drawing the BASE of
+        /// the tile, vertically.  It's intended to be an elevation,
+        /// so positive numbers will appear higher up.
+        /// </summary>
+        protected int VisualElevation = 0;
+
         public SortedDictionary<int, Queue<int>> TilesCopy()
         {
             SortedDictionary<int, Queue<int>> tilesCopy = new SortedDictionary<int, Queue<int>>();
@@ -95,10 +170,13 @@ namespace TileEngine
             float startingDepth, float heightRowDepthMod, Color tint)
         {
             float depth = startingDepth;
+            int heightOffset = 0;
+            int lastLevel = 0;
 
             foreach (int level in Tiles.Keys)
             {
-                int heightOffset = level * Tile.HeightTileOffset;
+                lastLevel = level;
+                heightOffset = level * Tile.HeightTileOffset;
 
                 foreach (int tileID in Tiles[level])
                 {
@@ -106,7 +184,7 @@ namespace TileEngine
                         Tile.TileSetTexture,
                         new Rectangle(
                             xDrawPosition,
-                            yDrawPosition - heightOffset,
+                            yDrawPosition - heightOffset - VisualElevation,
                             Tile.TileWidth,
                             Tile.TileHeight
                             ),
@@ -118,6 +196,81 @@ namespace TileEngine
                         depth - ((float)level) * heightRowDepthMod);
 
                     depth -= heightRowDepthMod;
+                }
+            }
+
+            if (UseBorders)
+            {
+                if (UseLeftBorder)
+                {
+                    spriteBatch.Draw(
+                        Tile.TileSetTexture,
+                        new Rectangle(
+                            xDrawPosition,
+                            yDrawPosition - heightOffset - VisualElevation,
+                            Tile.TileWidth,
+                            Tile.TileHeight
+                            ),
+                        Tile.GetSourceRectangle(LeftBorderTileIndex),
+                        tint,
+                        0f,
+                        Vector2.Zero,
+                        SpriteEffects.None,
+                        depth - ((float)lastLevel) * heightRowDepthMod);
+                }
+
+                if (UseRightBorder)
+                {
+                    spriteBatch.Draw(
+                        Tile.TileSetTexture,
+                        new Rectangle(
+                            xDrawPosition,
+                            yDrawPosition - heightOffset - VisualElevation,
+                            Tile.TileWidth,
+                            Tile.TileHeight
+                            ),
+                        Tile.GetSourceRectangle(RightBorderTileIndex),
+                        tint,
+                        0f,
+                        Vector2.Zero,
+                        SpriteEffects.None,
+                        depth - ((float)lastLevel) * heightRowDepthMod);
+                }
+
+                if (UseTopBorder)
+                {
+                    spriteBatch.Draw(
+                        Tile.TileSetTexture,
+                        new Rectangle(
+                            xDrawPosition,
+                            yDrawPosition - heightOffset - VisualElevation,
+                            Tile.TileWidth,
+                            Tile.TileHeight
+                            ),
+                        Tile.GetSourceRectangle(TopBorderTileIndex),
+                        tint,
+                        0f,
+                        Vector2.Zero,
+                        SpriteEffects.None,
+                        depth - ((float)lastLevel) * heightRowDepthMod);
+                }
+
+                if (UseBottomBorder)
+                {
+                    spriteBatch.Draw(
+                        Tile.TileSetTexture,
+                        new Rectangle(
+                            xDrawPosition,
+                            yDrawPosition - heightOffset - VisualElevation,
+                            Tile.TileWidth,
+                            Tile.TileHeight
+                            ),
+                        Tile.GetSourceRectangle(BottomBorderTileIndex),
+                        tint,
+                        0f,
+                        Vector2.Zero,
+                        SpriteEffects.None,
+                        depth - ((float)lastLevel) * heightRowDepthMod);
                 }
             }
         }
